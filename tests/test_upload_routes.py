@@ -74,6 +74,67 @@ def test_upload_rejects_no_file():
     assert response.headers["Location"] == "/"
 
 
+def test_upload_corrupt_pdf_redirects_with_flash_instead_of_crashing():
+    app, client = _client()
+    upload_dir = app.config["UPLOAD_FOLDER"]
+    files_before = set(os.listdir(upload_dir)) if os.path.isdir(upload_dir) else set()
+
+    data = {
+        "target_role": "Data Analyst",
+        "resume": (io.BytesIO(_read_fixture("corrupt.pdf")), "corrupt.pdf"),
+    }
+
+    response = client.post("/upload", data=data, content_type="multipart/form-data")
+
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/"
+
+    with app.app_context():
+        from app.models import Resume
+
+        assert Resume.query.count() == 0
+        db.session.remove()
+
+    # No orphaned file left behind in the upload folder by this request.
+    files_after = set(os.listdir(upload_dir)) if os.path.isdir(upload_dir) else set()
+    assert files_after == files_before
+
+
+def test_upload_corrupt_docx_redirects_with_flash_instead_of_crashing():
+    _, client = _client()
+    data = {
+        "target_role": "Data Analyst",
+        "resume": (io.BytesIO(_read_fixture("corrupt.docx")), "corrupt.docx"),
+    }
+
+    response = client.post("/upload", data=data, content_type="multipart/form-data")
+
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/"
+
+
+def test_upload_with_non_ascii_filename_falls_back_to_generic_name():
+    # Regression: secure_filename() strips non-Latin characters entirely, so
+    # "简历.pdf" collapsed to the bare string "pdf" with no extension
+    # separator -- displayed on the dashboard as if "pdf" were the filename.
+    app, client = _client()
+    data = {
+        "target_role": "Data Analyst",
+        "resume": (io.BytesIO(_read_fixture("sample_resume.docx")), "简历.docx"),
+    }
+
+    response = client.post("/upload", data=data, content_type="multipart/form-data")
+
+    assert response.status_code == 302
+
+    with app.app_context():
+        from app.models import Resume
+
+        resume = Resume.query.first()
+        assert resume.original_filename == "resume.docx"
+        db.session.remove()
+
+
 def test_preview_page_renders_extracted_text():
     app, client = _client()
     data = {

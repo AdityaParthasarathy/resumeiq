@@ -39,6 +39,12 @@ def upload():
         return redirect(url_for("main.index"))
 
     original_filename = secure_filename(file.filename)
+    if not original_filename or "." not in original_filename:
+        # secure_filename() strips non-ASCII characters, so a filename that's
+        # entirely non-Latin script (e.g. "简历.pdf") collapses to just the
+        # bare extension with no separator -- fall back to a generic name
+        # rather than displaying "pdf" as if that were the filename.
+        original_filename = f"resume.{ext}"
     stored_filename = f"{uuid.uuid4().hex}.{ext}"
     file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], stored_filename)
     file.save(file_path)

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block title %}ResumeIQ &mdash; {{ resume.original_filename }}{% endblock %}
 
@@ -62,20 +63,7 @@
             <p class="text-xs text-slate-400">Based on structure, skills, education, projects, contact info, and completeness.</p>
         </div>
 
-        <div class="mt-6 space-y-3">
-            {% for category, points in score.breakdown.items() %}
-            <div>
-                <div class="flex justify-between text-xs text-slate-500">
-                    <span class="capitalize">{{ category.replace('_', ' ') }}</span>
-                    <span>{{ points }} / {{ score.max_breakdown[category] }}</span>
-                </div>
-                <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-                    <div class="h-2 rounded-full bg-indigo-500"
-                         style="width: {{ (points / score.max_breakdown[category] * 100) if score.max_breakdown[category] else 0 }}%"></div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+        {{ macros.breakdown_bars(score.breakdown, score.max_breakdown) }}
 
         <div class="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
             <div>
@@ -149,20 +137,7 @@
             </div>
 
             {% if impact.bullets %}
-            <div class="mt-5 space-y-3">
-                {% for category, points in impact.breakdown.items() %}
-                <div>
-                    <div class="flex justify-between text-xs text-slate-500">
-                        <span class="capitalize">{{ category.replace('_', ' ') }}</span>
-                        <span>{{ points }} / {{ impact.max_breakdown[category] }}</span>
-                    </div>
-                    <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-                        <div class="h-2 rounded-full bg-indigo-500"
-                             style="width: {{ (points / impact.max_breakdown[category] * 100) if impact.max_breakdown[category] else 0 }}%"></div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            {{ macros.breakdown_bars(impact.breakdown, impact.max_breakdown, "mt-5") }}
 
             <ul class="mt-5 space-y-2">
                 {% for b in impact.bullets %}

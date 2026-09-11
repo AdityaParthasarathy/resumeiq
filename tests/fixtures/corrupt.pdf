@@ -1,0 +1,1 @@
+This is not a real PDF file -- just plain text with a .pdf extension, used to test that a malformed upload is handled gracefully instead of crashing the server.

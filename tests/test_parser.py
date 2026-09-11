@@ -35,3 +35,20 @@ def test_extract_text_from_empty_pdf_raises():
 def test_extract_text_unsupported_type_raises():
     with pytest.raises(ParsingError):
         extract_text("irrelevant/path", "txt")
+
+
+def test_corrupt_pdf_raises_parsing_error_not_a_crash():
+    # Regression: a malformed PDF used to raise an unhandled
+    # pdfminer.pdfparser.PDFSyntaxError straight out of extract_text,
+    # crashing the request instead of failing gracefully.
+    path = os.path.join(FIXTURES_DIR, "corrupt.pdf")
+
+    with pytest.raises(ParsingError, match="Couldn't read this PDF"):
+        extract_text(path, "pdf")
+
+
+def test_corrupt_docx_raises_parsing_error_not_a_crash():
+    path = os.path.join(FIXTURES_DIR, "corrupt.docx")
+
+    with pytest.raises(ParsingError, match="Couldn't read this DOCX"):
+        extract_text(path, "docx")

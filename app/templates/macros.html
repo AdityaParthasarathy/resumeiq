@@ -1,0 +1,16 @@
+{% macro breakdown_bars(breakdown, max_breakdown, margin_class="mt-6") %}
+<div class="{{ margin_class }} space-y-3">
+    {% for category, points in breakdown.items() %}
+    <div>
+        <div class="flex justify-between text-xs text-slate-500">
+            <span class="capitalize">{{ category.replace('_', ' ') }}</span>
+            <span>{{ points }} / {{ max_breakdown[category] }}</span>
+        </div>
+        <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
+            <div class="h-2 rounded-full bg-indigo-500"
+                 style="width: {{ (points / max_breakdown[category] * 100) if max_breakdown[category] else 0 }}%"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endmacro %}
