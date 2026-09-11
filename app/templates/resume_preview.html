@@ -12,7 +12,7 @@
                 <h1 class="text-xl font-semibold">{{ resume.original_filename }}</h1>
                 <p class="text-sm text-slate-500">
                     {{ resume.file_type|upper }} &middot; Target role: {{ resume.target_role }}
-                    &middot; {{ word_count }} words extracted
+                    &middot; {{ score.word_count }} words extracted
                 </p>
             </div>
             <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
@@ -20,11 +20,59 @@
             </span>
         </div>
 
-        <h2 class="mt-6 text-sm font-medium text-slate-700">Extracted text preview</h2>
+        <div class="mt-8 flex items-center gap-6">
+            <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-indigo-500">
+                <span class="text-2xl font-bold text-indigo-600">{{ score.total }}</span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-slate-700">Resume Score</p>
+                <p class="text-sm text-slate-400">out of 100, based on structure, skills, education, projects, contact info, and completeness</p>
+            </div>
+        </div>
+
+        <div class="mt-6 space-y-3">
+            {% for category, points in score.breakdown.items() %}
+            <div>
+                <div class="flex justify-between text-xs text-slate-500">
+                    <span class="capitalize">{{ category.replace('_', ' ') }}</span>
+                    <span>{{ points }} / {{ score.max_breakdown[category] }}</span>
+                </div>
+                <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
+                    <div class="h-2 rounded-full bg-indigo-500"
+                         style="width: {{ (points / score.max_breakdown[category] * 100) if score.max_breakdown[category] else 0 }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
+            <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Sections detected</h3>
+                <ul class="mt-2 space-y-1 text-sm">
+                    {% for section, present in score.sections_detected.items() %}
+                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600' if present else 'text-slate-300' }}">
+                        {{ "✓" if present else "✗" }} <span class="capitalize">{{ section }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Contact info</h3>
+                <ul class="mt-2 space-y-1 text-sm">
+                    {% for field, present in score.contact_info.items() %}
+                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600' if present else 'text-slate-300' }}">
+                        {{ "✓" if present else "✗" }} <span class="capitalize">{{ field }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="mt-8 text-sm font-medium text-slate-700">Extracted text preview</h2>
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
 
         <p class="mt-6 text-sm text-slate-400">
-            Score analysis, ATS keyword matching, and impact feedback come online on Day 3+.
+            ATS keyword matching and bullet-by-bullet impact feedback come online next.
         </p>
     </div>
 </section>

@@ -8,6 +8,7 @@ from app.extensions import db
 from app.models import Resume
 from app.services.parser import ParsingError, extract_text
 from app.services.roles import TARGET_ROLES
+from app.services.scorer import score_resume
 
 upload_bp = Blueprint("upload", __name__)
 
@@ -62,5 +63,5 @@ def upload():
 @upload_bp.route("/resume/<int:resume_id>")
 def preview(resume_id):
     resume = Resume.query.get_or_404(resume_id)
-    word_count = len(resume.raw_text.split())
-    return render_template("resume_preview.html", resume=resume, word_count=word_count)
+    score = score_resume(resume.raw_text)
+    return render_template("resume_preview.html", resume=resume, score=score)
