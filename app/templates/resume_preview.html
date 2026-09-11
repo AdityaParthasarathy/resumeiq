@@ -103,16 +103,41 @@
         </div>
 
         <div class="mt-10 border-t border-slate-100 pt-8">
-            <h2 class="text-sm font-medium text-slate-700">Bullet-by-bullet Impact Analysis</h2>
-            <p class="text-xs text-slate-400">Flags weak/passive phrasing and missing quantified results in each bullet.</p>
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                    <h2 class="text-sm font-medium text-slate-700">Bullet-by-bullet Impact Analysis</h2>
+                    <p class="text-xs text-slate-400">Flags weak/passive phrasing and missing quantified results in each bullet.</p>
+                </div>
+                {% if impact.impact_score is not none %}
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
+                    {{ 'bg-emerald-50 text-emerald-700' if impact.impact_score >= 70 else 'bg-amber-50 text-amber-700' if impact.impact_score >= 40 else 'bg-red-50 text-red-700' }}">
+                    Impact Score: {{ impact.impact_score }}/100
+                </span>
+                {% endif %}
+            </div>
 
-            {% if bullets %}
-            <ul class="mt-4 space-y-2">
-                {% for b in bullets %}
+            {% if impact.bullets %}
+            <div class="mt-5 space-y-3">
+                {% for category, points in impact.breakdown.items() %}
+                <div>
+                    <div class="flex justify-between text-xs text-slate-500">
+                        <span class="capitalize">{{ category.replace('_', ' ') }}</span>
+                        <span>{{ points }} / {{ impact.max_breakdown[category] }}</span>
+                    </div>
+                    <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
+                        <div class="h-2 rounded-full bg-indigo-500"
+                             style="width: {{ (points / impact.max_breakdown[category] * 100) if impact.max_breakdown[category] else 0 }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <ul class="mt-5 space-y-2">
+                {% for b in impact.bullets %}
                 <li class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm">
                     <div class="flex items-start justify-between gap-3">
                         <span class="text-slate-700">{{ b.text }}</span>
-                        <div class="flex shrink-0 items-center gap-1.5">
+                        <div class="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
                                 {{ 'bg-emerald-50 text-emerald-700' if b.verb_strength == 'strong'
                                    else 'bg-red-50 text-red-600' if b.verb_strength == 'weak'
@@ -123,6 +148,11 @@
                                 {{ 'bg-emerald-50 text-emerald-700' if b.has_metric else 'bg-slate-100 text-slate-400' }}">
                                 {{ "✓ metric" if b.has_metric else "no metric" }}
                             </span>
+                            {% if b.is_passive %}
+                            <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700">
+                                passive voice
+                            </span>
+                            {% endif %}
                         </div>
                     </div>
                 </li>
@@ -137,7 +167,7 @@
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
 
         <p class="mt-6 text-sm text-slate-400">
-            Aggregate impact score, passive-voice detection, and smart suggestions come online next.
+            Smart improvement suggestions come online next.
         </p>
     </div>
 </section>

@@ -1,6 +1,6 @@
 import os
 
-from app.services.impact_score import analyze_bullets, extract_bullets
+from app.services.impact_score import analyze_bullets, analyze_impact, extract_bullets
 from app.services.parser import extract_text
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -47,6 +47,15 @@ def test_weak_phrase_is_classified_weak():
     assert results[0]["verb_evidence"] == "responsible for"
 
 
+def test_weak_phrase_with_leading_auxiliary_is_still_classified_weak():
+    # "Was responsible for X" -- found via manual testing to slip past the
+    # weak-phrase check since it literally starts with "was", not "responsible".
+    results = analyze_bullets("- Was responsible for the reporting dashboard")
+
+    assert results[0]["verb_strength"] == "weak"
+    assert results[0]["verb_evidence"] == "responsible for"
+
+
 def test_weak_single_verb_is_classified_weak():
     results = analyze_bullets("- Helped the team debug production issues")
 
@@ -80,6 +89,76 @@ def test_has_metric_detects_percentage_dollar_multiplier_and_unit_counts():
     for bullet, expected in cases:
         result = analyze_bullets(bullet)[0]
         assert result["has_metric"] is expected, bullet
+
+
+def test_passive_voice_construction_is_detected():
+    results = analyze_bullets("- New dashboard was built to track KPIs")
+
+    assert results[0]["is_passive"] is True
+
+
+def test_active_voice_bullet_is_not_flagged_passive():
+    results = analyze_bullets("- Built a new dashboard to track KPIs")
+
+    assert results[0]["is_passive"] is False
+
+
+def test_reduced_passive_without_auxiliary_is_a_known_gap():
+    # Documented limitation: no "was/were" for the parser to anchor a passive
+    # dependency label on, so this reads as a miss, not a crash.
+    results = analyze_bullets("- Errors reduced by 30% through automated testing")
+
+    assert results[0]["is_passive"] is False
+
+
+def test_analyze_impact_returns_none_score_when_no_bullets():
+    result = analyze_impact("Just prose, no bullet points here.")
+
+    assert result["total_bullets"] == 0
+    assert result["impact_score"] is None
+    assert result["bullets"] == []
+
+
+def test_analyze_impact_breakdown_never_exceeds_category_weight():
+    from app.services.impact_score import IMPACT_WEIGHTS
+
+    text = extract_text(os.path.join(FIXTURES_DIR, "strong_resume.docx"), "docx")
+    result = analyze_impact(text)
+
+    for category, points in result["breakdown"].items():
+        assert 0 <= points <= IMPACT_WEIGHTS[category]
+    assert 0 <= result["impact_score"] <= 100
+
+
+def test_analyze_impact_scores_all_strong_quantified_active_bullets_highly():
+    text = "\n".join(
+        [
+            "- Led a team of 4 engineers to increase revenue by 20%",
+            "- Built a dashboard used by 500 customers",
+            "- Reduced latency by 35% through caching",
+        ]
+    )
+
+    result = analyze_impact(text)
+
+    assert result["impact_score"] >= 90
+    assert result["counts"]["strong"] == 3
+    assert result["counts"]["with_metric"] == 3
+    assert result["counts"]["passive"] == 0
+
+
+def test_analyze_impact_scores_weak_passive_unquantified_bullets_lowly():
+    text = "\n".join(
+        [
+            "- Responsible for the checkout flow",
+            "- Involved in team meetings",
+            "- Report was generated for stakeholders",
+        ]
+    )
+
+    result = analyze_impact(text)
+
+    assert result["impact_score"] <= 40
 
 
 def test_strong_resume_fixture_bullets_classified_as_expected():
