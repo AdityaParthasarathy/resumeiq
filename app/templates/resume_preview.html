@@ -68,11 +68,38 @@
             </div>
         </div>
 
+        <div class="mt-10 border-t border-slate-100 pt-8">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                    <h2 class="text-sm font-medium text-slate-700">ATS Keyword Check &mdash; {{ ats.role }}</h2>
+                    <p class="text-xs text-slate-400">{{ ats.total_matched }} / {{ ats.total_keywords }} role keywords found</p>
+                </div>
+                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
+                    {{ 'bg-emerald-50 text-emerald-700' if ats.ats_score >= 70 else 'bg-amber-50 text-amber-700' if ats.ats_score >= 40 else 'bg-red-50 text-red-700' }}">
+                    ATS Score: {{ ats.ats_score }}/100
+                </span>
+            </div>
+
+            {% for tier, label in [('must_have', 'Must-have keywords'), ('nice_to_have', 'Nice-to-have keywords')] %}
+            <div class="mt-5">
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ label }}</h3>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    {% for kw in ats[tier].matched %}
+                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">✓ {{ kw }}</span>
+                    {% endfor %}
+                    {% for kw in ats[tier].missing %}
+                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-400">{{ kw }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
         <h2 class="mt-8 text-sm font-medium text-slate-700">Extracted text preview</h2>
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
 
         <p class="mt-6 text-sm text-slate-400">
-            ATS keyword matching and bullet-by-bullet impact feedback come online next.
+            Bullet-by-bullet impact feedback and smart suggestions come online next.
         </p>
     </div>
 </section>

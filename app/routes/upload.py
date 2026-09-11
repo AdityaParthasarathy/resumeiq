@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 
 from app.extensions import db
 from app.models import Resume
+from app.services.ats_matcher import check_ats_keywords
 from app.services.parser import ParsingError, extract_text
 from app.services.roles import TARGET_ROLES
 from app.services.scorer import score_resume
@@ -64,4 +65,5 @@ def upload():
 def preview(resume_id):
     resume = Resume.query.get_or_404(resume_id)
     score = score_resume(resume.raw_text)
-    return render_template("resume_preview.html", resume=resume, score=score)
+    ats = check_ats_keywords(resume.raw_text, resume.target_role)
+    return render_template("resume_preview.html", resume=resume, score=score, ats=ats)

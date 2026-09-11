@@ -1,0 +1,18 @@
+{
+  "Data Analyst": {
+    "must_have": ["SQL", "Excel", "Python", "Data Visualization", "Statistics", "Data Cleaning"],
+    "nice_to_have": ["Tableau", "Power BI", "Pandas", "NumPy", "ETL", "A/B Testing", "Google Analytics", "Machine Learning"]
+  },
+  "Web Developer": {
+    "must_have": ["HTML", "CSS", "JavaScript", "Git", "REST API", "Responsive Design"],
+    "nice_to_have": ["React", "Node.js", "TypeScript", "MongoDB", "Express", "Webpack", "SQL", "Vue.js"]
+  },
+  "AI Engineer": {
+    "must_have": ["Python", "Machine Learning", "Deep Learning", "Neural Networks", "Data Preprocessing"],
+    "nice_to_have": ["TensorFlow", "PyTorch", "NLP", "Computer Vision", "Scikit-learn", "Pandas", "NumPy", "Model Deployment"]
+  },
+  "Cloud Engineer": {
+    "must_have": ["AWS", "Docker", "Kubernetes", "CI/CD", "Linux"],
+    "nice_to_have": ["Azure", "Terraform", "Jenkins", "DevOps", "Networking", "Bash", "Infrastructure as Code", "Monitoring"]
+  }
+}
