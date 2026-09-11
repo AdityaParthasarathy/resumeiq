@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, flash, redirect, url_for
+from flask import Flask, flash, redirect, render_template, url_for
 
 from app.config import config_by_name
 from app.extensions import db
@@ -25,6 +25,14 @@ def create_app(env=None):
     def file_too_large(_error):
         flash("File is too large. Max size is 5 MB.", "error")
         return redirect(url_for("main.index"))
+
+    @app.errorhandler(404)
+    def not_found(_error):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(500)
+    def server_error(_error):
+        return render_template("500.html"), 500
 
     with app.app_context():
         db.create_all()

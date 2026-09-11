@@ -2,16 +2,29 @@
     const dropzone = document.getElementById("dropzone");
     const input = document.getElementById("resume-input");
     const label = document.getElementById("dropzone-label");
+    const form = document.getElementById("upload-form");
+    const submitBtn = document.getElementById("submit-btn");
 
     if (!dropzone || !input) return;
 
     function showFilename(file) {
-        if (file) {
-            label.innerHTML = `<span class="font-medium text-indigo-600">${file.name}</span> selected`;
-        }
+        if (!file) return;
+        label.textContent = "";
+        const name = document.createElement("span");
+        name.className = "font-medium text-indigo-600";
+        name.textContent = file.name;
+        label.appendChild(name);
+        label.appendChild(document.createTextNode(" selected"));
     }
 
     dropzone.addEventListener("click", () => input.click());
+
+    dropzone.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            input.click();
+        }
+    });
 
     input.addEventListener("change", () => showFilename(input.files[0]));
 
@@ -36,4 +49,11 @@
             showFilename(file);
         }
     });
+
+    if (form && submitBtn) {
+        form.addEventListener("submit", () => {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Analyzing…";
+        });
+    }
 })();
