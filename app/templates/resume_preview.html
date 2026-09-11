@@ -102,11 +102,42 @@
             {% endfor %}
         </div>
 
+        <div class="mt-10 border-t border-slate-100 pt-8">
+            <h2 class="text-sm font-medium text-slate-700">Bullet-by-bullet Impact Analysis</h2>
+            <p class="text-xs text-slate-400">Flags weak/passive phrasing and missing quantified results in each bullet.</p>
+
+            {% if bullets %}
+            <ul class="mt-4 space-y-2">
+                {% for b in bullets %}
+                <li class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm">
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="text-slate-700">{{ b.text }}</span>
+                        <div class="flex shrink-0 items-center gap-1.5">
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
+                                {{ 'bg-emerald-50 text-emerald-700' if b.verb_strength == 'strong'
+                                   else 'bg-red-50 text-red-600' if b.verb_strength == 'weak'
+                                   else 'bg-slate-100 text-slate-500' }}">
+                                {{ b.verb_strength }} verb
+                            </span>
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
+                                {{ 'bg-emerald-50 text-emerald-700' if b.has_metric else 'bg-slate-100 text-slate-400' }}">
+                                {{ "✓ metric" if b.has_metric else "no metric" }}
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="mt-4 text-sm text-slate-400">No bulleted lines detected &mdash; use "-" or "&bull;" markers under Experience/Projects to enable impact analysis.</p>
+            {% endif %}
+        </div>
+
         <h2 class="mt-8 text-sm font-medium text-slate-700">Extracted text preview</h2>
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
 
         <p class="mt-6 text-sm text-slate-400">
-            Bullet-by-bullet impact feedback and smart suggestions come online next.
+            Aggregate impact score, passive-voice detection, and smart suggestions come online next.
         </p>
     </div>
 </section>
