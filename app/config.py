@@ -26,6 +26,7 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, "instance", "test_uploads")
 
 
 config_by_name = {

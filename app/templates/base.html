@@ -26,6 +26,17 @@
     </header>
 
     <main class="flex-1">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="max-w-5xl mx-auto px-4 pt-4 space-y-2">
+                {% for category, message in messages %}
+                <div class="rounded-lg border px-4 py-3 text-sm {{ 'border-red-200 bg-red-50 text-red-700' if category == 'error' else 'border-emerald-200 bg-emerald-50 text-emerald-700' }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </main>
 
