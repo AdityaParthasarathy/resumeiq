@@ -84,11 +84,18 @@
             <div class="mt-5">
                 <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ label }}</h3>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    {% for kw in ats[tier].matched %}
-                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">✓ {{ kw }}</span>
-                    {% endfor %}
-                    {% for kw in ats[tier].missing %}
-                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-400">{{ kw }}</span>
+                    {% for d in ats[tier].details %}
+                        {% if d.matched %}
+                        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700"
+                              title="{{ 'Matched via synonym: ' + d.evidence if d.match_type == 'synonym' else 'Fuzzy-matched: ' + d.evidence if d.match_type == 'fuzzy' else 'Exact match' }}">
+                            ✓ {{ d.keyword }}
+                            {% if d.match_type != 'exact' %}
+                            <span class="rounded-full bg-emerald-100 px-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600">{{ d.match_type }}</span>
+                            {% endif %}
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-400">{{ d.keyword }}</span>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>

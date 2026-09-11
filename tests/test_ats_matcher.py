@@ -66,3 +66,36 @@ def test_multi_word_keyword_matches_exact_phrase():
     result = check_ats_keywords("Skilled in data visualization and dashboards.", "Data Analyst")
 
     assert "Data Visualization" in result["must_have"]["matched"]
+
+
+def test_synonym_match_js_counts_as_javascript():
+    result = check_ats_keywords("Frontend work using JS and modern tooling.", "Web Developer")
+
+    assert "JavaScript" in result["must_have"]["matched"]
+    detail = next(d for d in result["must_have"]["details"] if d["keyword"] == "JavaScript")
+    assert detail["match_type"] == "synonym"
+    assert detail["evidence"] == "js"
+
+
+def test_synonym_match_ml_counts_as_machine_learning():
+    result = check_ats_keywords("Applied ml techniques to production data.", "AI Engineer")
+
+    assert "Machine Learning" in result["must_have"]["matched"]
+    detail = next(d for d in result["must_have"]["details"] if d["keyword"] == "Machine Learning")
+    assert detail["match_type"] == "synonym"
+
+
+def test_fuzzy_match_catches_typo_in_ats_check():
+    result = check_ats_keywords("Deployed apps with Dockr and manual scripts.", "Cloud Engineer")
+
+    assert "Docker" in result["must_have"]["matched"]
+    detail = next(d for d in result["must_have"]["details"] if d["keyword"] == "Docker")
+    assert detail["match_type"] == "fuzzy"
+    assert detail["evidence"] == "dockr"
+
+
+def test_exact_match_is_preferred_over_synonym_or_fuzzy():
+    result = check_ats_keywords("Built apps with JavaScript directly.", "Web Developer")
+
+    detail = next(d for d in result["must_have"]["details"] if d["keyword"] == "JavaScript")
+    assert detail["match_type"] == "exact"

@@ -2,6 +2,8 @@ import json
 import os
 import re
 
+from app.services.fuzzy_match import find_fuzzy_match, find_synonym_match, tokenize
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data")
 KEYWORD_BANK_PATH = os.path.join(DATA_DIR, "keyword_banks.json")
 
@@ -24,10 +26,34 @@ def _keyword_found(keyword, normalized_text):
     return re.search(pattern, normalized_text) is not None
 
 
-def _tier_result(keywords, normalized_text):
-    matched = [kw for kw in keywords if _keyword_found(kw, normalized_text)]
-    missing = [kw for kw in keywords if kw not in matched]
-    return {"matched": matched, "missing": missing, "total": len(keywords)}
+def _tier_result(keywords, normalized_text, tokens):
+    details = []
+    for keyword in keywords:
+        if _keyword_found(keyword, normalized_text):
+            details.append(
+                {"keyword": keyword, "matched": True, "match_type": "exact", "evidence": keyword}
+            )
+            continue
+
+        alias = find_synonym_match(keyword, normalized_text)
+        if alias:
+            details.append(
+                {"keyword": keyword, "matched": True, "match_type": "synonym", "evidence": alias}
+            )
+            continue
+
+        fuzzy_token, _score = find_fuzzy_match(keyword, tokens)
+        if fuzzy_token:
+            details.append(
+                {"keyword": keyword, "matched": True, "match_type": "fuzzy", "evidence": fuzzy_token}
+            )
+            continue
+
+        details.append({"keyword": keyword, "matched": False, "match_type": None, "evidence": None})
+
+    matched = [d["keyword"] for d in details if d["matched"]]
+    missing = [d["keyword"] for d in details if not d["matched"]]
+    return {"matched": matched, "missing": missing, "total": len(keywords), "details": details}
 
 
 def check_ats_keywords(raw_text, role):
@@ -37,10 +63,11 @@ def check_ats_keywords(raw_text, role):
 
     # Collapse whitespace/newlines so multi-word keywords can match across line wraps.
     normalized_text = re.sub(r"\s+", " ", raw_text.lower())
+    tokens = tokenize(normalized_text)
 
     role_bank = bank[role]
-    must_have = _tier_result(role_bank.get("must_have", []), normalized_text)
-    nice_to_have = _tier_result(role_bank.get("nice_to_have", []), normalized_text)
+    must_have = _tier_result(role_bank.get("must_have", []), normalized_text, tokens)
+    nice_to_have = _tier_result(role_bank.get("nice_to_have", []), normalized_text, tokens)
 
     must_have_rate = len(must_have["matched"]) / must_have["total"] if must_have["total"] else 1.0
     nice_to_have_rate = (
