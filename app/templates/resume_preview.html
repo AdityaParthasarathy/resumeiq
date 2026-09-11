@@ -163,12 +163,32 @@
             {% endif %}
         </div>
 
+        <div class="mt-10 border-t border-slate-100 pt-8">
+            <h2 class="text-sm font-medium text-slate-700">Smart Feedback</h2>
+            <p class="text-xs text-slate-400">Prioritized suggestions generated from the analysis above.</p>
+
+            <ul class="mt-4 space-y-2">
+                {% for s in feedback %}
+                <li class="flex items-start gap-3 rounded-lg border border-slate-200 px-4 py-3 text-sm">
+                    <span class="mt-0.5 inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide
+                        {{ 'bg-red-50 text-red-600' if s.priority == 'critical'
+                           else 'bg-amber-50 text-amber-700' if s.priority == 'high'
+                           else 'bg-blue-50 text-blue-600' if s.priority == 'medium'
+                           else 'bg-slate-100 text-slate-500' if s.priority == 'low'
+                           else 'bg-emerald-50 text-emerald-700' }}">
+                        {{ s.priority }}
+                    </span>
+                    <div>
+                        <span class="font-medium text-slate-700">{{ s.category }}:</span>
+                        <span class="text-slate-600">{{ s.message }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <h2 class="mt-8 text-sm font-medium text-slate-700">Extracted text preview</h2>
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
-
-        <p class="mt-6 text-sm text-slate-400">
-            Smart improvement suggestions come online next.
-        </p>
     </div>
 </section>
 {% endblock %}

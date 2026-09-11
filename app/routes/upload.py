@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from app.extensions import db
 from app.models import Resume
 from app.services.ats_matcher import check_ats_keywords
+from app.services.feedback import generate_feedback
 from app.services.impact_score import analyze_impact
 from app.services.parser import ParsingError, extract_text
 from app.services.roles import TARGET_ROLES
@@ -68,6 +69,12 @@ def preview(resume_id):
     score = score_resume(resume.raw_text)
     ats = check_ats_keywords(resume.raw_text, resume.target_role)
     impact = analyze_impact(resume.raw_text)
+    feedback = generate_feedback(score, ats, impact)
     return render_template(
-        "resume_preview.html", resume=resume, score=score, ats=ats, impact=impact
+        "resume_preview.html",
+        resume=resume,
+        score=score,
+        ats=ats,
+        impact=impact,
+        feedback=feedback,
     )
