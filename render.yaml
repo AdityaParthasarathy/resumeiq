@@ -10,7 +10,3 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
-    disk:
-      name: resumeiq-data
-      mountPath: /opt/render/project/src/instance
-      sizeGB: 1
