@@ -88,3 +88,29 @@ def test_preview_page_renders_extracted_text():
     assert response.status_code == 200
     assert b"Jordan Lee" in response.data
     assert b"Parsed successfully" in response.data
+
+
+def test_preview_page_persists_analysis_and_reuses_it_on_second_visit():
+    app, client = _client()
+    data = {
+        "target_role": "Web Developer",
+        "resume": (io.BytesIO(_read_fixture("sample_resume.docx")), "sample_resume.docx"),
+    }
+    upload_response = client.post("/upload", data=data, content_type="multipart/form-data")
+    resume_url = upload_response.headers["Location"]
+
+    first_response = client.get(resume_url)
+    second_response = client.get(resume_url)
+
+    assert first_response.status_code == 200
+    assert second_response.status_code == 200
+    assert first_response.data == second_response.data
+
+    with app.app_context():
+        from app.models import Analysis
+
+        assert Analysis.query.count() == 1
+        analysis = Analysis.query.first()
+        assert 0 <= analysis.score <= 100
+        assert isinstance(analysis.feedback, list)
+        db.session.remove()

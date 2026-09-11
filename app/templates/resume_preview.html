@@ -2,14 +2,29 @@
 
 {% block title %}ResumeIQ &mdash; {{ resume.original_filename }}{% endblock %}
 
+{% block head %}
+<style>
+    @media print {
+        header, footer, .no-print { display: none !important; }
+        body { background: white; }
+        main { padding: 0 !important; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="max-w-3xl mx-auto px-4 py-12">
-    <a href="{{ url_for('main.index') }}" class="text-sm text-indigo-600 hover:underline">&larr; Upload another resume</a>
+<section class="max-w-4xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('main.index') }}" class="text-sm text-indigo-600 hover:underline">&larr; Upload another resume</a>
+        <button onclick="window.print()" class="no-print inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">
+            Print / Save as PDF
+        </button>
+    </div>
 
     <div class="mt-4 bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
-                <h1 class="text-xl font-semibold">{{ resume.original_filename }}</h1>
+                <h1 class="text-xl font-semibold">Resume Dashboard &mdash; {{ resume.original_filename }}</h1>
                 <p class="text-sm text-slate-500">
                     {{ resume.file_type|upper }} &middot; Target role: {{ resume.target_role }}
                     &middot; {{ score.word_count }} words extracted
@@ -20,14 +35,31 @@
             </span>
         </div>
 
-        <div class="mt-8 flex items-center gap-6">
-            <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-indigo-500">
-                <span class="text-2xl font-bold text-indigo-600">{{ score.total }}</span>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-slate-700">Resume Score</p>
-                <p class="text-sm text-slate-400">out of 100, based on structure, skills, education, projects, contact info, and completeness</p>
-            </div>
+        <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <a href="#resume-score-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
+                <p class="text-xs font-medium text-slate-400">Resume Score</p>
+                <p class="mt-1 text-3xl font-bold text-indigo-600">{{ score.total }}</p>
+                <p class="text-xs text-slate-400">out of 100</p>
+            </a>
+            <a href="#ats-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
+                <p class="text-xs font-medium text-slate-400">ATS Score &mdash; {{ ats.role }}</p>
+                <p class="mt-1 text-3xl font-bold text-sky-600">{{ ats.ats_score }}</p>
+                <p class="text-xs text-slate-400">out of 100</p>
+            </a>
+            <a href="#impact-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
+                <p class="text-xs font-medium text-slate-400">Impact Score</p>
+                <p class="mt-1 text-3xl font-bold text-emerald-600">{{ impact.impact_score if impact.impact_score is not none else "N/A" }}</p>
+                <p class="text-xs text-slate-400">{{ "out of 100" if impact.impact_score is not none else "no bullets detected" }}</p>
+            </a>
+        </div>
+
+        <div class="mt-6">
+            <canvas id="overviewChart" height="90"></canvas>
+        </div>
+
+        <div id="resume-score-section" class="mt-10 border-t border-slate-100 pt-8">
+            <p class="text-sm font-medium text-slate-700">Resume Score breakdown</p>
+            <p class="text-xs text-slate-400">Based on structure, skills, education, projects, contact info, and completeness.</p>
         </div>
 
         <div class="mt-6 space-y-3">
@@ -68,7 +100,7 @@
             </div>
         </div>
 
-        <div class="mt-10 border-t border-slate-100 pt-8">
+        <div id="ats-section" class="mt-10 border-t border-slate-100 pt-8">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
                     <h2 class="text-sm font-medium text-slate-700">ATS Keyword Check &mdash; {{ ats.role }}</h2>
@@ -102,7 +134,7 @@
             {% endfor %}
         </div>
 
-        <div class="mt-10 border-t border-slate-100 pt-8">
+        <div id="impact-section" class="mt-10 border-t border-slate-100 pt-8">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
                     <h2 class="text-sm font-medium text-slate-700">Bullet-by-bullet Impact Analysis</h2>
@@ -163,7 +195,7 @@
             {% endif %}
         </div>
 
-        <div class="mt-10 border-t border-slate-100 pt-8">
+        <div id="feedback-section" class="mt-10 border-t border-slate-100 pt-8">
             <h2 class="text-sm font-medium text-slate-700">Smart Feedback</h2>
             <p class="text-xs text-slate-400">Prioritized suggestions generated from the analysis above.</p>
 
@@ -191,4 +223,37 @@
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+<script>
+    (function () {
+        const canvas = document.getElementById("overviewChart");
+        if (!canvas || typeof Chart === "undefined") return;
+
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels: ["Resume Score", "ATS Score", "Impact Score"],
+                datasets: [{
+                    label: "Score out of 100",
+                    data: [
+                        {{ score.total }},
+                        {{ ats.ats_score }},
+                        {{ impact.impact_score if impact.impact_score is not none else 0 }}
+                    ],
+                    backgroundColor: ["#4f46e5", "#0284c7", "#059669"],
+                    borderRadius: 6,
+                }],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                scales: { x: { min: 0, max: 100 } },
+                plugins: { legend: { display: false } },
+            },
+        });
+    })();
+</script>
 {% endblock %}

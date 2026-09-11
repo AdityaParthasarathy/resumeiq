@@ -5,7 +5,7 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 from werkzeug.utils import secure_filename
 
 from app.extensions import db
-from app.models import Resume
+from app.models import Analysis, Resume
 from app.services.ats_matcher import check_ats_keywords
 from app.services.feedback import generate_feedback
 from app.services.impact_score import analyze_impact
@@ -66,10 +66,34 @@ def upload():
 @upload_bp.route("/resume/<int:resume_id>")
 def preview(resume_id):
     resume = Resume.query.get_or_404(resume_id)
-    score = score_resume(resume.raw_text)
-    ats = check_ats_keywords(resume.raw_text, resume.target_role)
-    impact = analyze_impact(resume.raw_text)
-    feedback = generate_feedback(score, ats, impact)
+
+    # A resume's raw_text and target_role are immutable after upload, so the
+    # analysis is deterministic -- compute it once and reuse on later visits
+    # instead of re-running spaCy on every page view.
+    analysis = Analysis.query.filter_by(resume_id=resume.id).first()
+
+    if analysis is None:
+        score = score_resume(resume.raw_text)
+        ats = check_ats_keywords(resume.raw_text, resume.target_role)
+        impact = analyze_impact(resume.raw_text)
+        feedback = generate_feedback(score, ats, impact)
+
+        analysis = Analysis(
+            resume_id=resume.id,
+            score=score["total"],
+            score_breakdown=score,
+            ats_result=ats,
+            impact_result=impact,
+            feedback=feedback,
+        )
+        db.session.add(analysis)
+        db.session.commit()
+    else:
+        score = analysis.score_breakdown
+        ats = analysis.ats_result
+        impact = analysis.impact_result
+        feedback = analysis.feedback
+
     return render_template(
         "resume_preview.html",
         resume=resume,
