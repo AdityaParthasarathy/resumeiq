@@ -162,6 +162,19 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% if b.suggested_verbs %}
+                    <p class="mt-2 text-xs text-indigo-600">
+                        💡 Try: {% for v in b.suggested_verbs %}<strong>{{ v }}</strong>{{ ", " if not loop.last }}{% endfor %}
+                    </p>
+                    {% elif b.active_rewrite %}
+                    <p class="mt-2 text-xs text-indigo-600">
+                        💡 Active voice: <strong>&ldquo;{{ b.active_rewrite }}&rdquo;</strong>
+                    </p>
+                    {% elif b.quant_hint %}
+                    <p class="mt-2 text-xs text-indigo-600">
+                        💡 {{ b.quant_hint | capitalize }}
+                    </p>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>

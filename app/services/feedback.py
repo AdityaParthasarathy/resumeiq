@@ -150,40 +150,110 @@ def _impact_suggestions(impact):
                 'points starting with "-" so your impact can be analyzed and scored.',
             )
         )
-        return suggestions
+    else:
+        suggestions += _bullet_dependent_suggestions(impact)
+
+    # Whole-resume checks below don't need any bullets to exist, so they run
+    # even when the branch above already reported "no bullets detected".
+    if impact["cliches"]:
+        suggestions.append(
+            _suggest(
+                "medium",
+                "Impact",
+                f"Replace overused phrases with concrete evidence: {_keyword_list(impact['cliches'])}.",
+            )
+        )
+
+    if impact["first_person_count"] > 0:
+        suggestions.append(
+            _suggest(
+                "low",
+                "Impact",
+                'Avoid first-person pronouns ("I", "my", "me") in bullet points -- resumes '
+                'conventionally use implied-subject fragments, e.g. "Led the team" instead of '
+                '"I led the team".',
+            )
+        )
+
+    return suggestions
+
+
+def _bullet_dependent_suggestions(impact):
+    suggestions = []
 
     weak_bullets = [b for b in impact["bullets"] if b["verb_strength"] == "weak"]
     if weak_bullets:
-        example = _truncate(weak_bullets[0]["text"])
+        first = weak_bullets[0]
+        example = _truncate(first["text"])
+        verb_options = (
+            ", ".join(f'"{v}"' for v in first["suggested_verbs"])
+            if first["suggested_verbs"]
+            else '"Led", "Built", "Improved"'
+        )
         suggestions.append(
             _suggest(
                 "high",
                 "Impact",
-                f'{len(weak_bullets)} bullet(s) use weak phrasing, e.g. "{example}" -- replace with '
-                'strong action verbs like "Led", "Built", "Improved", or "Automated".',
+                f'{len(weak_bullets)} bullet(s) use weak phrasing, e.g. "{example}" -- try opening '
+                f"with a stronger verb instead, such as {verb_options}.",
             )
         )
 
     no_metric_bullets = [b for b in impact["bullets"] if not b["has_metric"]]
     if no_metric_bullets:
+        first = no_metric_bullets[0]
+        example = _truncate(first["text"])
+        hint = first["quant_hint"] or "add a number, percentage, or timeframe to show impact"
         suggestions.append(
             _suggest(
                 "medium",
                 "Impact",
                 f"{len(no_metric_bullets)} of {impact['total_bullets']} bullets don't include a "
-                "number -- add metrics (%, $, time saved, users impacted) to show quantified impact.",
+                f'number -- for example, in "{example}", {hint}.',
             )
         )
 
     passive_bullets = [b for b in impact["bullets"] if b["is_passive"]]
     if passive_bullets:
-        example = _truncate(passive_bullets[0]["text"])
+        rewritable = next((b for b in passive_bullets if b["active_rewrite"]), None)
+        if rewritable:
+            suggestions.append(
+                _suggest(
+                    "medium",
+                    "Impact",
+                    f'{len(passive_bullets)} bullet(s) use passive voice, e.g. "{_truncate(rewritable["text"])}" '
+                    f'-- try: "{rewritable["active_rewrite"]}".',
+                )
+            )
+        else:
+            example = _truncate(passive_bullets[0]["text"])
+            suggestions.append(
+                _suggest(
+                    "medium",
+                    "Impact",
+                    f'{len(passive_bullets)} bullet(s) use passive voice, e.g. "{example}" -- rewrite in '
+                    "active voice, starting with a strong verb.",
+                )
+            )
+
+    if impact["repeated_verbs"]:
+        verb, count = max(impact["repeated_verbs"], key=lambda vc: vc[1])
         suggestions.append(
             _suggest(
-                "medium",
+                "low",
                 "Impact",
-                f'{len(passive_bullets)} bullet(s) use passive voice, e.g. "{example}" -- rewrite in '
-                "active voice, starting with a strong verb.",
+                f'You open {count} bullets with "{verb.capitalize()}" -- vary your verbs so bullets '
+                "don't read as repetitive.",
+            )
+        )
+
+    if impact["tense_mixed"]:
+        suggestions.append(
+            _suggest(
+                "low",
+                "Impact",
+                "Your bullets mix past and present tense -- pick one consistently (past tense for "
+                "roles you've left, present tense for bullets describing ongoing responsibilities).",
             )
         )
 

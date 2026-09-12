@@ -89,6 +89,10 @@ def test_fully_complete_analysis_returns_positive_message():
             {"text": "Led the migration", "verb_strength": "strong", "has_metric": True, "is_passive": False},
         ]
         * 3,
+        "repeated_verbs": [],
+        "tense_mixed": False,
+        "cliches": [],
+        "first_person_count": 0,
     }
 
     suggestions = generate_feedback(complete_score, complete_ats, complete_impact)
@@ -96,6 +100,96 @@ def test_fully_complete_analysis_returns_positive_message():
     assert len(suggestions) == 1
     assert suggestions[0]["priority"] == "info"
     assert suggestions[0]["category"] == "Overall"
+
+
+def test_weak_bullet_suggestion_includes_context_specific_verb_options():
+    score, ats, impact = _analyze("sample_resume.docx", "docx", "Data Analyst")
+    impact["bullets"] = [
+        {
+            "text": "Responsible for a team of 5 engineers",
+            "verb_strength": "weak",
+            "has_metric": False,
+            "is_passive": False,
+            "suggested_verbs": ["Led", "Managed", "Directed"],
+            "active_rewrite": None,
+            "quant_hint": "add a number, percentage, or timeframe to show impact",
+        }
+    ]
+    impact["total_bullets"] = 1
+    impact["repeated_verbs"] = []
+    impact["tense_mixed"] = False
+    impact["cliches"] = []
+    impact["first_person_count"] = 0
+
+    suggestions = generate_feedback(score, ats, impact)
+    impact_msgs = " ".join(s["message"] for s in suggestions if s["category"] == "Impact")
+
+    assert "Led" in impact_msgs and "Managed" in impact_msgs and "Directed" in impact_msgs
+
+
+def test_passive_bullet_suggestion_uses_active_rewrite_when_available():
+    score, ats, impact = _analyze("sample_resume.docx", "docx", "Data Analyst")
+    impact["bullets"] = [
+        {
+            "text": "The project was managed by a small team",
+            "verb_strength": "neutral",
+            "has_metric": False,
+            "is_passive": True,
+            "suggested_verbs": None,
+            "active_rewrite": "A small team managed the project",
+            "quant_hint": "add a number, percentage, or timeframe to show impact",
+        }
+    ]
+    impact["total_bullets"] = 1
+    impact["repeated_verbs"] = []
+    impact["tense_mixed"] = False
+    impact["cliches"] = []
+    impact["first_person_count"] = 0
+
+    suggestions = generate_feedback(score, ats, impact)
+    impact_msgs = " ".join(s["message"] for s in suggestions if s["category"] == "Impact")
+
+    assert "A small team managed the project" in impact_msgs
+
+
+def test_repeated_verbs_generate_low_priority_suggestion():
+    # Needs a fixture with actual bullets -- repeated-verb/tense checks only
+    # run when there's at least one bullet to analyze in the first place.
+    score, ats, impact = _analyze("strong_resume.docx", "docx", "Data Analyst")
+    impact["repeated_verbs"] = [("managed", 3)]
+
+    suggestions = generate_feedback(score, ats, impact)
+
+    match = next(s for s in suggestions if "Managed" in s["message"] and "vary your verbs" in s["message"])
+    assert match["priority"] == "low"
+
+
+def test_tense_mixed_generates_suggestion():
+    score, ats, impact = _analyze("strong_resume.docx", "docx", "Data Analyst")
+    impact["tense_mixed"] = True
+
+    suggestions = generate_feedback(score, ats, impact)
+
+    assert any("mix past and present tense" in s["message"] for s in suggestions)
+
+
+def test_cliches_generate_suggestion_listing_them():
+    score, ats, impact = _analyze("sample_resume.docx", "docx", "Data Analyst")
+    impact["cliches"] = ["team player", "fast learner"]
+
+    suggestions = generate_feedback(score, ats, impact)
+
+    match = next(s for s in suggestions if "team player" in s["message"])
+    assert match["priority"] == "medium"
+
+
+def test_first_person_pronouns_generate_suggestion():
+    score, ats, impact = _analyze("sample_resume.docx", "docx", "Data Analyst")
+    impact["first_person_count"] = 2
+
+    suggestions = generate_feedback(score, ats, impact)
+
+    assert any("first-person pronouns" in s["message"] for s in suggestions)
 
 
 def test_keyword_list_truncates_long_missing_lists():
