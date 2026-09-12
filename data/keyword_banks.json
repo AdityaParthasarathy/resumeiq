@@ -14,5 +14,21 @@
   "Cloud Engineer": {
     "must_have": ["AWS", "Docker", "Kubernetes", "CI/CD", "Linux"],
     "nice_to_have": ["Azure", "Terraform", "Jenkins", "DevOps", "Networking", "Bash", "Infrastructure as Code", "Monitoring"]
+  },
+  "Mobile App Developer": {
+    "must_have": ["Flutter", "React Native", "Swift", "Kotlin", "REST API"],
+    "nice_to_have": ["Firebase", "SQLite", "Android Studio", "Xcode", "Java", "Dart", "Push Notifications", "Google Play"]
+  },
+  "UI/UX Designer": {
+    "must_have": ["Figma", "Wireframing", "Prototyping", "User Research", "Usability Testing"],
+    "nice_to_have": ["Sketch", "Adobe XD", "Design Systems", "Information Architecture", "A/B Testing", "Accessibility", "User Personas", "Interaction Design"]
+  },
+  "Backend Developer": {
+    "must_have": ["REST API", "SQL", "Node.js", "Authentication", "Microservices"],
+    "nice_to_have": ["Django", "Express", "GraphQL", "Docker", "NoSQL", "Caching", "Message Queue", "API Design"]
+  },
+  "DevOps Engineer": {
+    "must_have": ["CI/CD", "Docker", "Kubernetes", "Terraform", "Automation"],
+    "nice_to_have": ["Jenkins", "Ansible", "Monitoring", "AWS", "Linux", "Bash", "Infrastructure as Code", "Logging"]
   }
 }

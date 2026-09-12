@@ -41,5 +41,13 @@
   "data preprocessing": "Data Preprocessing",
   "data pre-processing": "Data Preprocessing",
   "data cleansing": "Data Cleaning",
-  "data wrangling": "Data Cleaning"
+  "data wrangling": "Data Cleaning",
+  "wireframes": "Wireframing",
+  "wireframe": "Wireframing",
+  "usability test": "Usability Testing",
+  "usability tests": "Usability Testing",
+  "auth": "Authentication",
+  "authn": "Authentication",
+  "message queues": "Message Queue",
+  "reactnative": "React Native"
 }

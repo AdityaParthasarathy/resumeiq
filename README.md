@@ -10,7 +10,7 @@ AI-powered resume analyzer built as an AI/NLP capstone project. Upload a PDF or 
 
 1. **Resume Upload & Parsing** — accepts PDF/DOCX, extracts text via `pdfplumber`/`python-docx`, stores it.
 2. **Resume Score Analyzer** — scores /100 across structure, skills, education, projects, contact info, and completeness, via section detection (header-line regex matching) and rule-based scoring tiers.
-3. **ATS Keyword Checker** — compares resume text against a per-role keyword bank (Data Analyst, Web Developer, AI Engineer, Cloud Engineer) and flags gaps, split into must-have/nice-to-have tiers.
+3. **ATS Keyword Checker** — compares resume text against a per-role keyword bank and flags gaps, split into must-have/nice-to-have tiers. Covers 8 roles: the 4 named in the original brief (Data Analyst, Web Developer, AI Engineer, Cloud Engineer) plus 4 added afterward as a purely additive expansion (Mobile App Developer, UI/UX Designer, Backend Developer, DevOps Engineer) — same rule-based matching, just more keyword banks.
 4. **Smart Feedback System** — turns the score/ATS/impact analysis into prioritized, human-readable suggestions via rule-based templates (no model call).
 5. **Dashboard & Report Generation** — a single page with score tiles, a Chart.js comparison chart, per-category breakdowns, keyword badges, bullet-level flags, and a Print/Save-as-PDF report view.
 
