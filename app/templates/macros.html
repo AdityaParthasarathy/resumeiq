@@ -14,3 +14,53 @@
     {% endfor %}
 </div>
 {% endmacro %}
+
+{% macro resume_mock(id=none, interactive=false) %}
+<div {% if id %}id="{{ id }}"{% endif %} class="resume-mock" data-active="score">
+    <div class="resume-mock__top">
+        <div>
+            <p class="resume-mock__name">Jordan Lee</p>
+            <p class="resume-mock__contact">jordan.lee@email.com &middot; (555) 013-2024</p>
+        </div>
+        <div class="resume-mock__ring" style="--offset-score:18; --offset-ats:62.1; --offset-impact:42.5">
+            <svg width="56" height="56" viewBox="0 0 60 60">
+                <circle class="track" cx="30" cy="30" r="26" fill="none" stroke-width="5" />
+                <circle class="value" cx="30" cy="30" r="26" fill="none" stroke-width="5" stroke-dasharray="163.36" />
+            </svg>
+            <span class="resume-mock__ring-num" data-layer="score">89</span>
+            <span class="resume-mock__ring-num" data-layer="ats">62</span>
+            <span class="resume-mock__ring-num" data-layer="impact">74</span>
+        </div>
+    </div>
+
+    <div class="resume-mock__section">
+        <p class="resume-mock__label">Sections detected</p>
+        <div class="resume-mock__row" data-layer="score">
+            <span class="resume-mock__bullet">Contact &middot; Skills &middot; Education &middot; Experience &middot; Projects</span>
+            <span class="resume-mock__tag resume-mock__tag--good" data-layer="score">5/6</span>
+        </div>
+
+        <p class="resume-mock__label" style="margin-top:.85rem">Skills</p>
+        <div class="resume-mock__row" data-layer="ats">
+            <span class="resume-mock__bullet">Python, SQL, React, Communication</span>
+            <span class="resume-mock__tag resume-mock__tag--pen" data-layer="ats">4/14 keywords</span>
+        </div>
+    </div>
+
+    <div class="resume-mock__section">
+        <p class="resume-mock__label">Experience</p>
+        <div class="resume-mock__row" data-layer="impact">
+            <span class="resume-mock__bullet">Responsible for maintaining backend services</span>
+            <span class="resume-mock__tag resume-mock__tag--weak" data-layer="impact">Weak verb</span>
+        </div>
+        <div class="resume-mock__row" data-layer="impact">
+            <span class="resume-mock__bullet">Built a caching layer, reducing latency by 35%</span>
+            <span class="resume-mock__tag resume-mock__tag--brand" data-layer="impact">Strong &middot; metric</span>
+        </div>
+    </div>
+
+    <div class="resume-mock__note">
+        <strong>3 suggestions ranked by priority:</strong> add React/SQL-adjacent keywords for this role, rewrite the weak bullet with a stronger verb, and quantify one more result.
+    </div>
+</div>
+{% endmacro %}

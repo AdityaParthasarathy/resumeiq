@@ -1,0 +1,245 @@
+/* ResumeIQ landing page -- design tokens + the "annotated resume" motif.
+   Loaded only on the landing page; the dashboard/error pages don't need it. */
+
+:root {
+    --ink: #0b0e14;
+    --ink-soft: #3f3f46;
+    --paper: #faf9f7;
+    --paper-line: #e7e5e1;
+    --surface: #ffffff;
+    --muted: #8a8f98;
+    --brand: #4f46e5;
+    --brand-deep: #3730a3;
+    --pen: #b45309;
+    --pen-soft: #fef3e2;
+    --good: #059669;
+    --good-soft: #ecfdf5;
+    --weak: #b91c1c;
+    --weak-soft: #fef2f2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+}
+
+.font-display {
+    font-family: "Fraunces", ui-serif, Georgia, serif;
+    font-optical-sizing: auto;
+}
+
+::selection {
+    background: var(--brand);
+    color: #fff;
+}
+
+/* ---- scroll reveals ---- */
+.reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---- primary CTA: restrained lift, not a "magnetic" gimmick ---- */
+.btn-primary {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.2s ease;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(79, 70, 229, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+    .btn-primary:hover { transform: none; }
+}
+
+/* ================= resume mock (the recurring visual motif) ================= */
+.resume-mock {
+    background: var(--surface);
+    border: 1px solid var(--paper-line);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(11, 14, 20, 0.04), 0 24px 48px -24px rgba(11, 14, 20, 0.25);
+    padding: 1.75rem;
+}
+
+.resume-mock__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--paper-line);
+}
+.resume-mock__name {
+    font-family: "Fraunces", ui-serif, serif;
+    font-size: 1.25rem;
+    color: var(--ink);
+    line-height: 1.2;
+}
+.resume-mock__contact {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.resume-mock__ring {
+    position: relative;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+}
+.resume-mock__ring svg { transform: rotate(-90deg); }
+.resume-mock__ring circle.track { stroke: var(--paper-line); }
+.resume-mock__ring circle.value {
+    stroke: var(--brand);
+    stroke-linecap: round;
+    stroke-dashoffset: var(--offset-score);
+    transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
+}
+.resume-mock[data-active="ats"] .resume-mock__ring circle.value { stroke-dashoffset: var(--offset-ats); }
+.resume-mock[data-active="impact"] .resume-mock__ring circle.value,
+.resume-mock[data-active="feedback"] .resume-mock__ring circle.value { stroke-dashoffset: var(--offset-impact); }
+
+.resume-mock__ring-num {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.resume-mock[data-active="score"] .resume-mock__ring-num[data-layer="score"],
+.resume-mock[data-active="ats"] .resume-mock__ring-num[data-layer="ats"],
+.resume-mock[data-active="impact"] .resume-mock__ring-num[data-layer="impact"],
+.resume-mock[data-active="feedback"] .resume-mock__ring-num[data-layer="impact"] {
+    opacity: 1;
+}
+
+.resume-mock__section {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--paper-line);
+}
+.resume-mock__section:last-child { border-bottom: none; padding-bottom: 0; }
+.resume-mock__label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+}
+.resume-mock__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    border-radius: 8px;
+    padding: 0.2rem 0.4rem;
+    margin: 0 -0.4rem;
+    transition: background-color 0.4s ease;
+}
+.resume-mock__bullet { flex: 1; }
+
+.resume-mock__tag {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+}
+.resume-mock__tag--good { background: var(--good-soft); color: var(--good); }
+.resume-mock__tag--weak { background: var(--weak-soft); color: var(--weak); }
+.resume-mock__tag--pen { background: var(--pen-soft); color: var(--pen); }
+.resume-mock__tag--brand { background: #eef2ff; color: var(--brand-deep); }
+
+/* Show only the tags belonging to the active layer; highlight the row they sit on.
+   The impact layer stays highlighted through the "feedback" step too, so the
+   final step reads as a synthesis of what came before rather than a reset. */
+.resume-mock[data-active="score"] .resume-mock__row[data-layer="score"] { background: #eef2ff; }
+.resume-mock[data-active="score"] .resume-mock__tag[data-layer="score"],
+.resume-mock[data-active="ats"] .resume-mock__tag[data-layer="ats"],
+.resume-mock[data-active="impact"] .resume-mock__tag[data-layer="impact"],
+.resume-mock[data-active="feedback"] .resume-mock__tag[data-layer="impact"] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+.resume-mock[data-active="ats"] .resume-mock__row[data-layer="ats"] { background: var(--pen-soft); }
+.resume-mock[data-active="impact"] .resume-mock__row[data-layer="impact"],
+.resume-mock[data-active="feedback"] .resume-mock__row[data-layer="impact"] { background: #eef2ff; }
+
+.resume-mock__note {
+    display: none;
+    margin-top: 0.85rem;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    background: #eef2ff;
+    border: 1px solid #dfe3fb;
+    font-size: 0.78rem;
+    color: var(--brand-deep);
+    line-height: 1.5;
+}
+.resume-mock[data-active="feedback"] .resume-mock__note { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+    .resume-mock__tag, .resume-mock__row, .resume-mock__ring circle.value { transition: none; }
+}
+
+/* ---- story track (sticky mock beside scrolling steps) ---- */
+.story-track {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+}
+@media (min-width: 1024px) {
+    .story-track { grid-template-columns: 0.85fr 1fr; gap: 4rem; }
+}
+.story-sticky {
+    position: static;
+}
+@media (min-width: 1024px) {
+    .story-sticky { position: sticky; top: 7rem; align-self: start; }
+}
+
+.story-step {
+    padding: 1.5rem 0 1.5rem 1.25rem;
+    border-left: 2px solid var(--paper-line);
+    opacity: 0.4;
+    transition: opacity 0.4s ease, border-color 0.4s ease;
+}
+.story-step.is-active {
+    opacity: 1;
+    border-color: var(--brand);
+}
+@media (prefers-reduced-motion: reduce) {
+    .story-step { transition: none; }
+}
+.story-step__index {
+    font-family: "Fraunces", serif;
+    font-size: 0.8rem;
+    color: var(--brand);
+}
+
+/* ---- role chips ---- */
+.role-chip {
+    border: 1px solid var(--paper-line);
+    background: var(--surface);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.role-chip:hover { border-color: var(--brand); transform: translateY(-1px); }
