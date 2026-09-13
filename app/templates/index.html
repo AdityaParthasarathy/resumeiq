@@ -16,11 +16,11 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24 lg:pt-24 lg:pb-32">
         <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             <div class="lg:col-span-6 reveal">
-                <p class="text-xs font-semibold tracking-[0.15em] uppercase text-indigo-600">Rule-based resume analysis</p>
-                <h1 class="font-display mt-5 text-[2.75rem] sm:text-6xl leading-[1.05] tracking-tight text-[#0b0e14]">
-                    Know exactly what your resume is missing&mdash;<span class="italic text-indigo-600">and why.</span>
+                <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">Rule-based resume analysis</p>
+                <h1 class="font-display mt-5 text-[2.75rem] sm:text-6xl leading-[1.05] tracking-tight text-[var(--ink)]">
+                    Know exactly what your resume is missing&mdash;<span class="italic text-[var(--brand)]">and why.</span>
                 </h1>
-                <p class="mt-6 text-lg text-slate-600 max-w-xl leading-relaxed">
+                <p class="mt-6 text-lg text-[var(--ink-soft)] max-w-xl leading-relaxed">
                     Upload a PDF or DOCX and get a completeness score, a role-specific ATS keyword
                     gap report, and bullet-by-bullet impact feedback. Every suggestion traces back
                     to a rule you can inspect &mdash; not a model you have to trust.
@@ -29,12 +29,12 @@
                     <a href="#analyze" class="btn-primary inline-flex items-center justify-center rounded-full bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white">
                         Analyze your resume
                     </a>
-                    <a href="#how-it-works" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                    <a href="#how-it-works" class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors">
                         See how it reads your resume
                         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clip-rule="evenodd"/></svg>
                     </a>
                 </div>
-                <p class="mt-8 text-xs text-slate-400">No account. No LLM call. Free to try &mdash; results in seconds.</p>
+                <p class="mt-8 text-xs text-[var(--muted)]">No account. No LLM call. Free to try &mdash; results in seconds.</p>
             </div>
 
             <div class="lg:col-span-6 reveal" style="transition-delay:120ms">
@@ -45,12 +45,12 @@
 </section>
 
 <!-- ============ HOW IT WORKS (scroll story) ============ -->
-<section id="how-it-works" class="border-t border-[#e7e5e1] bg-white">
+<section id="how-it-works" class="border-t border-[var(--paper-line)] bg-[var(--surface)] transition-colors">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-24">
         <div class="max-w-2xl reveal">
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-indigo-600">How it reads your resume</p>
-            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[#0b0e14]">Four passes over the same document.</h2>
-            <p class="mt-4 text-slate-600 leading-relaxed">
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">How it reads your resume</p>
+            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[var(--ink)]">Four passes over the same document.</h2>
+            <p class="mt-4 text-[var(--ink-soft)] leading-relaxed">
                 Every upload goes through four independent, inspectable passes &mdash; no single
                 opaque score. Scroll and watch the same resume get annotated by each one.
             </p>
@@ -64,8 +64,8 @@
             <div>
                 <div class="story-step" data-layer="score">
                     <p class="story-step__index">01</p>
-                    <h3 class="mt-2 text-xl font-semibold text-[#0b0e14]">Structure &amp; completeness</h3>
-                    <p class="mt-3 text-slate-600 leading-relaxed">
+                    <h3 class="mt-2 text-xl font-semibold text-[var(--ink)]">Structure &amp; completeness</h3>
+                    <p class="mt-3 text-[var(--ink-soft)] leading-relaxed">
                         Section detection scans for short, header-like lines to find your Skills,
                         Education, Experience, and Projects &mdash; deliberately avoiding false
                         positives from a bullet that just <em>mentions</em> &ldquo;skills&rdquo;
@@ -76,8 +76,8 @@
 
                 <div class="story-step" data-layer="ats">
                     <p class="story-step__index">02</p>
-                    <h3 class="mt-2 text-xl font-semibold text-[#0b0e14]">Role-specific ATS keywords</h3>
-                    <p class="mt-3 text-slate-600 leading-relaxed">
+                    <h3 class="mt-2 text-xl font-semibold text-[var(--ink)]">Role-specific ATS keywords</h3>
+                    <p class="mt-3 text-[var(--ink-soft)] leading-relaxed">
                         Your resume is checked against a keyword bank for the role you pick, in
                         three passes: exact match, then a synonym map (&ldquo;JS&rdquo; &rarr;
                         &ldquo;JavaScript&rdquo;), then fuzzy typo correction (&ldquo;dockr&rdquo;
@@ -87,8 +87,8 @@
 
                 <div class="story-step" data-layer="impact">
                     <p class="story-step__index">03</p>
-                    <h3 class="mt-2 text-xl font-semibold text-[#0b0e14]">Bullet-by-bullet impact</h3>
-                    <p class="mt-3 text-slate-600 leading-relaxed">
+                    <h3 class="mt-2 text-xl font-semibold text-[var(--ink)]">Bullet-by-bullet impact</h3>
+                    <p class="mt-3 text-[var(--ink-soft)] leading-relaxed">
                         Every bullet is parsed with spaCy: is the opening verb strong or weak? Is
                         there a quantified result? Is it written in passive voice? Weak bullets get
                         context-aware verb suggestions &mdash; not just a red flag.
@@ -97,8 +97,8 @@
 
                 <div class="story-step" data-layer="feedback">
                     <p class="story-step__index">04</p>
-                    <h3 class="mt-2 text-xl font-semibold text-[#0b0e14]">Prioritized, human-readable feedback</h3>
-                    <p class="mt-3 text-slate-600 leading-relaxed">
+                    <h3 class="mt-2 text-xl font-semibold text-[var(--ink)]">Prioritized, human-readable feedback</h3>
+                    <p class="mt-3 text-[var(--ink-soft)] leading-relaxed">
                         All three passes feed a rule-based template engine that ranks suggestions
                         from critical to low priority, in plain language &mdash; so you know what
                         to fix first.
@@ -110,12 +110,12 @@
 </section>
 
 <!-- ============ WHY RULE-BASED ============ -->
-<section class="border-t border-[#e7e5e1]">
+<section class="border-t border-[var(--paper-line)]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-24">
         <div class="max-w-2xl reveal">
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-indigo-600">Why rule-based</p>
-            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[#0b0e14]">No black box. Every score is a rule you can read.</h2>
-            <p class="mt-4 text-slate-600 leading-relaxed">
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">Why rule-based</p>
+            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[var(--ink)]">No black box. Every score is a rule you can read.</h2>
+            <p class="mt-4 text-[var(--ink-soft)] leading-relaxed">
                 Most resume tools either give vague advice or hide behind a model that can't
                 explain itself. ResumeIQ has neither problem &mdash; there's no model making the
                 decisions.
@@ -130,9 +130,9 @@
                 ("Tested against real bugs", "A 100+ test suite, plus real failures caught by hand: a mis-tagged verb, a corrupted-file crash, a CDN link serving the wrong build — each with its own regression test."),
             ] %}
             {% for title, body in principles %}
-            <div class="reveal rounded-2xl border border-[#e7e5e1] bg-white p-7" style="transition-delay:{{ loop.index0 * 80 }}ms">
-                <h3 class="font-display text-lg text-[#0b0e14]">{{ title }}</h3>
-                <p class="mt-2.5 text-sm text-slate-600 leading-relaxed">{{ body }}</p>
+            <div class="reveal rounded-2xl border border-[var(--paper-line)] bg-[var(--surface)] p-7" style="transition-delay:{{ loop.index0 * 80 }}ms">
+                <h3 class="font-display text-lg text-[var(--ink)]">{{ title }}</h3>
+                <p class="mt-2.5 text-sm text-[var(--ink-soft)] leading-relaxed">{{ body }}</p>
             </div>
             {% endfor %}
         </div>
@@ -140,52 +140,52 @@
 </section>
 
 <!-- ============ ROLES ============ -->
-<section class="border-t border-[#e7e5e1] bg-white">
+<section class="border-t border-[var(--paper-line)] bg-[var(--surface)]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-24">
         <div class="max-w-2xl reveal">
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-indigo-600">Built for your target role</p>
-            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[#0b0e14]">Eight roles, one matching engine.</h2>
-            <p class="mt-4 text-slate-600 leading-relaxed">Each role has its own must-have / nice-to-have keyword bank &mdash; the same resume scores differently depending on what you're targeting.</p>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">Built for your target role</p>
+            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[var(--ink)]">Eight roles, one matching engine.</h2>
+            <p class="mt-4 text-[var(--ink-soft)] leading-relaxed">Each role has its own must-have / nice-to-have keyword bank &mdash; the same resume scores differently depending on what you're targeting.</p>
         </div>
         <div class="mt-10 flex flex-wrap gap-3 reveal">
             {% for role in target_roles %}
-            <span class="role-chip rounded-full px-4 py-2 text-sm text-slate-700">{{ role }}</span>
+            <span class="role-chip rounded-full px-4 py-2 text-sm text-[var(--ink-soft)]">{{ role }}</span>
             {% endfor %}
         </div>
     </div>
 </section>
 
 <!-- ============ ANALYZE (functional form) ============ -->
-<section id="analyze" class="border-t border-[#e7e5e1]">
+<section id="analyze" class="border-t border-[var(--paper-line)]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-24">
         <div class="max-w-xl mx-auto text-center reveal">
-            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-indigo-600">Try it now</p>
-            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[#0b0e14]">Upload your resume.</h2>
-            <p class="mt-3 text-slate-600">Takes a few seconds. Nothing is shared or stored beyond this analysis.</p>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">Try it now</p>
+            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[var(--ink)]">Upload your resume.</h2>
+            <p class="mt-3 text-[var(--ink-soft)]">Takes a few seconds. Nothing is shared or stored beyond this analysis.</p>
         </div>
 
         <form id="upload-form" action="{{ url_for('upload.upload') }}" method="post" enctype="multipart/form-data"
-              class="reveal mt-10 max-w-md mx-auto bg-white border border-[#e7e5e1] rounded-2xl shadow-sm p-8 text-left">
+              class="reveal mt-10 max-w-md mx-auto bg-[var(--surface)] border border-[var(--paper-line)] rounded-2xl shadow-sm p-8 text-left">
 
-            <label for="target_role" class="block text-sm font-medium text-slate-700">Target role</label>
+            <label for="target_role" class="block text-sm font-medium text-[var(--ink-soft)]">Target role</label>
             <select id="target_role" name="target_role" required
-                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    class="mt-1 w-full rounded-lg border border-[var(--paper-line)] bg-[var(--surface)] text-[var(--ink)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="" disabled selected>Select a role&hellip;</option>
                 {% for role in target_roles %}
                 <option value="{{ role }}">{{ role }}</option>
                 {% endfor %}
             </select>
 
-            <label for="resume-input" class="block mt-5 text-sm font-medium text-slate-700">Resume file</label>
+            <label for="resume-input" class="block mt-5 text-sm font-medium text-[var(--ink-soft)]">Resume file</label>
             <div id="dropzone" role="button" tabindex="0" aria-label="Upload resume file, PDF or DOCX, up to 5 MB"
-                 class="mt-1 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 px-4 py-8 text-center cursor-pointer transition-colors hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                 class="mt-1 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[var(--paper-line)] px-4 py-8 text-center cursor-pointer transition-colors hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <svg class="h-8 w-8 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 8.25 12 3.75m0 0L7.5 8.25M12 3.75v13.5" />
                 </svg>
-                <p id="dropzone-label" class="text-sm text-slate-500">
-                    <span class="font-medium text-indigo-600">Click to upload</span> or drag and drop
+                <p id="dropzone-label" class="text-sm text-[var(--muted)]">
+                    <span class="font-medium text-[var(--brand)]">Click to upload</span> or drag and drop
                 </p>
-                <p class="text-xs text-slate-400">PDF or DOCX, up to 5 MB</p>
+                <p class="text-xs text-[var(--muted)]">PDF or DOCX, up to 5 MB</p>
                 <input id="resume-input" name="resume" type="file" accept=".pdf,.docx" required class="hidden" />
             </div>
 

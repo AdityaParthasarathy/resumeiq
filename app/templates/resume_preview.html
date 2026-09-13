@@ -16,41 +16,41 @@
 {% block content %}
 <section class="max-w-4xl mx-auto px-4 py-12">
     <div class="flex items-center justify-between">
-        <a href="{{ url_for('main.index') }}" class="text-sm text-indigo-600 hover:underline">&larr; Upload another resume</a>
-        <button onclick="window.print()" class="no-print inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">
+        <a href="{{ url_for('main.index') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">&larr; Upload another resume</a>
+        <button onclick="window.print()" class="no-print inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">
             Print / Save as PDF
         </button>
     </div>
 
-    <div class="mt-4 bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
+    <div class="mt-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-8 transition-colors">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
-                <h1 class="text-xl font-semibold">Resume Dashboard &mdash; {{ resume.original_filename }}</h1>
-                <p class="text-sm text-slate-500">
+                <h1 class="text-xl font-semibold dark:text-slate-100">Resume Dashboard &mdash; {{ resume.original_filename }}</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
                     {{ resume.file_type|upper }} &middot; Target role: {{ resume.target_role }}
                     &middot; {{ score.word_count }} words extracted
                 </p>
             </div>
-            <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+            <span class="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
                 Parsed successfully
             </span>
         </div>
 
         <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <a href="#resume-score-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
-                <p class="text-xs font-medium text-slate-400">Resume Score</p>
-                <p class="mt-1 text-3xl font-bold text-indigo-600">{{ score.total }}</p>
-                <p class="text-xs text-slate-400">out of 100</p>
+            <a href="#resume-score-section" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+                <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Resume Score</p>
+                <p class="mt-1 text-3xl font-bold text-indigo-600 dark:text-indigo-400">{{ score.total }}</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500">out of 100</p>
             </a>
-            <a href="#ats-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
-                <p class="text-xs font-medium text-slate-400">ATS Score &mdash; {{ ats.role }}</p>
-                <p class="mt-1 text-3xl font-bold text-sky-600">{{ ats.ats_score }}</p>
-                <p class="text-xs text-slate-400">out of 100</p>
+            <a href="#ats-section" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+                <p class="text-xs font-medium text-slate-400 dark:text-slate-500">ATS Score &mdash; {{ ats.role }}</p>
+                <p class="mt-1 text-3xl font-bold text-sky-600 dark:text-sky-400">{{ ats.ats_score }}</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500">out of 100</p>
             </a>
-            <a href="#impact-section" class="rounded-xl border border-slate-200 p-4 hover:border-indigo-300 transition-colors">
-                <p class="text-xs font-medium text-slate-400">Impact Score</p>
-                <p class="mt-1 text-3xl font-bold text-emerald-600">{{ impact.impact_score if impact.impact_score is not none else "N/A" }}</p>
-                <p class="text-xs text-slate-400">{{ "out of 100" if impact.impact_score is not none else "no bullets detected" }}</p>
+            <a href="#impact-section" class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors">
+                <p class="text-xs font-medium text-slate-400 dark:text-slate-500">Impact Score</p>
+                <p class="mt-1 text-3xl font-bold text-emerald-600 dark:text-emerald-400">{{ impact.impact_score if impact.impact_score is not none else "N/A" }}</p>
+                <p class="text-xs text-slate-400 dark:text-slate-500">{{ "out of 100" if impact.impact_score is not none else "no bullets detected" }}</p>
             </a>
         </div>
 
@@ -58,29 +58,29 @@
             <canvas id="overviewChart" height="90"></canvas>
         </div>
 
-        <div id="resume-score-section" class="mt-10 border-t border-slate-100 pt-8">
-            <p class="text-sm font-medium text-slate-700">Resume Score breakdown</p>
-            <p class="text-xs text-slate-400">Based on structure, skills, education, projects, contact info, and completeness.</p>
+        <div id="resume-score-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">Resume Score breakdown</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Based on structure, skills, education, projects, contact info, and completeness.</p>
         </div>
 
         {{ macros.breakdown_bars(score.breakdown, score.max_breakdown) }}
 
         <div class="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
             <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Sections detected</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Sections detected</h3>
                 <ul class="mt-2 space-y-1 text-sm">
                     {% for section, present in score.sections_detected.items() %}
-                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600' if present else 'text-slate-300' }}">
+                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600 dark:text-emerald-400' if present else 'text-slate-300 dark:text-slate-700' }}">
                         {{ "✓" if present else "✗" }} <span class="capitalize">{{ section }}</span>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
             <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Contact info</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Contact info</h3>
                 <ul class="mt-2 space-y-1 text-sm">
                     {% for field, present in score.contact_info.items() %}
-                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600' if present else 'text-slate-300' }}">
+                    <li class="flex items-center gap-1.5 {{ 'text-emerald-600 dark:text-emerald-400' if present else 'text-slate-300 dark:text-slate-700' }}">
                         {{ "✓" if present else "✗" }} <span class="capitalize">{{ field }}</span>
                     </li>
                     {% endfor %}
@@ -88,33 +88,33 @@
             </div>
         </div>
 
-        <div id="ats-section" class="mt-10 border-t border-slate-100 pt-8">
+        <div id="ats-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h2 class="text-sm font-medium text-slate-700">ATS Keyword Check &mdash; {{ ats.role }}</h2>
-                    <p class="text-xs text-slate-400">{{ ats.total_matched }} / {{ ats.total_keywords }} role keywords found</p>
+                    <h2 class="text-sm font-medium text-slate-700 dark:text-slate-200">ATS Keyword Check &mdash; {{ ats.role }}</h2>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">{{ ats.total_matched }} / {{ ats.total_keywords }} role keywords found</p>
                 </div>
                 <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-                    {{ 'bg-emerald-50 text-emerald-700' if ats.ats_score >= 70 else 'bg-amber-50 text-amber-700' if ats.ats_score >= 40 else 'bg-red-50 text-red-700' }}">
+                    {{ 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' if ats.ats_score >= 70 else 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400' if ats.ats_score >= 40 else 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400' }}">
                     ATS Score: {{ ats.ats_score }}/100
                 </span>
             </div>
 
             {% for tier, label in [('must_have', 'Must-have keywords'), ('nice_to_have', 'Nice-to-have keywords')] %}
             <div class="mt-5">
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ label }}</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ label }}</h3>
                 <div class="mt-2 flex flex-wrap gap-2">
                     {% for d in ats[tier].details %}
                         {% if d.matched %}
-                        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700"
+                        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400"
                               title="{{ 'Matched via synonym: ' + d.evidence if d.match_type == 'synonym' else 'Fuzzy-matched: ' + d.evidence if d.match_type == 'fuzzy' else 'Exact match' }}">
                             ✓ {{ d.keyword }}
                             {% if d.match_type != 'exact' %}
-                            <span class="rounded-full bg-emerald-100 px-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600">{{ d.match_type }}</span>
+                            <span class="rounded-full bg-emerald-100 dark:bg-emerald-500/20 px-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-300">{{ d.match_type }}</span>
                             {% endif %}
                         </span>
                         {% else %}
-                        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-400">{{ d.keyword }}</span>
+                        <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-400 dark:text-slate-500">{{ d.keyword }}</span>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -122,15 +122,15 @@
             {% endfor %}
         </div>
 
-        <div id="impact-section" class="mt-10 border-t border-slate-100 pt-8">
+        <div id="impact-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h2 class="text-sm font-medium text-slate-700">Bullet-by-bullet Impact Analysis</h2>
-                    <p class="text-xs text-slate-400">Flags weak/passive phrasing and missing quantified results in each bullet.</p>
+                    <h2 class="text-sm font-medium text-slate-700 dark:text-slate-200">Bullet-by-bullet Impact Analysis</h2>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Flags weak/passive phrasing and missing quantified results in each bullet.</p>
                 </div>
                 {% if impact.impact_score is not none %}
                 <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-                    {{ 'bg-emerald-50 text-emerald-700' if impact.impact_score >= 70 else 'bg-amber-50 text-amber-700' if impact.impact_score >= 40 else 'bg-red-50 text-red-700' }}">
+                    {{ 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' if impact.impact_score >= 70 else 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400' if impact.impact_score >= 40 else 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400' }}">
                     Impact Score: {{ impact.impact_score }}/100
                 </span>
                 {% endif %}
@@ -141,37 +141,37 @@
 
             <ul class="mt-5 space-y-2">
                 {% for b in impact.bullets %}
-                <li class="rounded-lg border border-slate-200 px-4 py-2.5 text-sm">
+                <li class="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2.5 text-sm">
                     <div class="flex items-start justify-between gap-3">
-                        <span class="text-slate-700">{{ b.text }}</span>
+                        <span class="text-slate-700 dark:text-slate-200">{{ b.text }}</span>
                         <div class="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
-                                {{ 'bg-emerald-50 text-emerald-700' if b.verb_strength == 'strong'
-                                   else 'bg-red-50 text-red-600' if b.verb_strength == 'weak'
-                                   else 'bg-slate-100 text-slate-500' }}">
+                                {{ 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' if b.verb_strength == 'strong'
+                                   else 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' if b.verb_strength == 'weak'
+                                   else 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400' }}">
                                 {{ b.verb_strength }} verb
                             </span>
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
-                                {{ 'bg-emerald-50 text-emerald-700' if b.has_metric else 'bg-slate-100 text-slate-400' }}">
+                                {{ 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' if b.has_metric else 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500' }}">
                                 {{ "✓ metric" if b.has_metric else "no metric" }}
                             </span>
                             {% if b.is_passive %}
-                            <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700">
+                            <span class="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-400">
                                 passive voice
                             </span>
                             {% endif %}
                         </div>
                     </div>
                     {% if b.suggested_verbs %}
-                    <p class="mt-2 text-xs text-indigo-600">
+                    <p class="mt-2 text-xs text-indigo-600 dark:text-indigo-400">
                         💡 Try: {% for v in b.suggested_verbs %}<strong>{{ v }}</strong>{{ ", " if not loop.last }}{% endfor %}
                     </p>
                     {% elif b.active_rewrite %}
-                    <p class="mt-2 text-xs text-indigo-600">
+                    <p class="mt-2 text-xs text-indigo-600 dark:text-indigo-400">
                         💡 Active voice: <strong>&ldquo;{{ b.active_rewrite }}&rdquo;</strong>
                     </p>
                     {% elif b.quant_hint %}
-                    <p class="mt-2 text-xs text-indigo-600">
+                    <p class="mt-2 text-xs text-indigo-600 dark:text-indigo-400">
                         💡 {{ b.quant_hint | capitalize }}
                     </p>
                     {% endif %}
@@ -179,36 +179,36 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p class="mt-4 text-sm text-slate-400">No bulleted lines detected &mdash; use "-" or "&bull;" markers under Experience/Projects to enable impact analysis.</p>
+            <p class="mt-4 text-sm text-slate-400 dark:text-slate-500">No bulleted lines detected &mdash; use "-" or "&bull;" markers under Experience/Projects to enable impact analysis.</p>
             {% endif %}
         </div>
 
-        <div id="feedback-section" class="mt-10 border-t border-slate-100 pt-8">
-            <h2 class="text-sm font-medium text-slate-700">Smart Feedback</h2>
-            <p class="text-xs text-slate-400">Prioritized suggestions generated from the analysis above.</p>
+        <div id="feedback-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
+            <h2 class="text-sm font-medium text-slate-700 dark:text-slate-200">Smart Feedback</h2>
+            <p class="text-xs text-slate-400 dark:text-slate-500">Prioritized suggestions generated from the analysis above.</p>
 
             <ul class="mt-4 space-y-2">
                 {% for s in feedback %}
-                <li class="flex items-start gap-3 rounded-lg border border-slate-200 px-4 py-3 text-sm">
+                <li class="flex items-start gap-3 rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-3 text-sm">
                     <span class="mt-0.5 inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide
-                        {{ 'bg-red-50 text-red-600' if s.priority == 'critical'
-                           else 'bg-amber-50 text-amber-700' if s.priority == 'high'
-                           else 'bg-blue-50 text-blue-600' if s.priority == 'medium'
-                           else 'bg-slate-100 text-slate-500' if s.priority == 'low'
-                           else 'bg-emerald-50 text-emerald-700' }}">
+                        {{ 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400' if s.priority == 'critical'
+                           else 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400' if s.priority == 'high'
+                           else 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400' if s.priority == 'medium'
+                           else 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400' if s.priority == 'low'
+                           else 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' }}">
                         {{ s.priority }}
                     </span>
                     <div>
-                        <span class="font-medium text-slate-700">{{ s.category }}:</span>
-                        <span class="text-slate-600">{{ s.message }}</span>
+                        <span class="font-medium text-slate-700 dark:text-slate-200">{{ s.category }}:</span>
+                        <span class="text-slate-600 dark:text-slate-400">{{ s.message }}</span>
                     </div>
                 </li>
                 {% endfor %}
             </ul>
         </div>
 
-        <h2 class="mt-8 text-sm font-medium text-slate-700">Extracted text preview</h2>
-        <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-slate-600">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
+        <h2 class="mt-8 text-sm font-medium text-slate-700 dark:text-slate-200">Extracted text preview</h2>
+        <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4 text-xs text-slate-600 dark:text-slate-400">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
     </div>
 </section>
 {% endblock %}
@@ -220,7 +220,14 @@
         const canvas = document.getElementById("overviewChart");
         if (!canvas || typeof Chart === "undefined") return;
 
-        new Chart(canvas, {
+        function isDark() { return document.documentElement.classList.contains("dark"); }
+        function themeColors() {
+            return isDark()
+                ? { tick: "#94a3b8", grid: "rgba(148, 163, 184, 0.15)" }
+                : { tick: "#64748b", grid: "rgba(100, 116, 139, 0.12)" };
+        }
+
+        const chart = new Chart(canvas, {
             type: "bar",
             data: {
                 labels: ["Resume Score", "ATS Score", "Impact Score"],
@@ -238,9 +245,22 @@
             options: {
                 indexAxis: "y",
                 responsive: true,
-                scales: { x: { min: 0, max: 100 } },
+                scales: {
+                    x: { min: 0, max: 100, ticks: { color: themeColors().tick }, grid: { color: themeColors().grid } },
+                    y: { ticks: { color: themeColors().tick }, grid: { display: false } },
+                },
                 plugins: { legend: { display: false } },
             },
+        });
+
+        // Repaint the axis colors immediately when the theme is toggled, instead
+        // of requiring a page reload to stop looking wrong.
+        document.addEventListener("resumeiq-theme-change", function () {
+            const c = themeColors();
+            chart.options.scales.x.ticks.color = c.tick;
+            chart.options.scales.x.grid.color = c.grid;
+            chart.options.scales.y.ticks.color = c.tick;
+            chart.update();
         });
     })();
 </script>

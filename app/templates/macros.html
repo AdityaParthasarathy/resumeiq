@@ -2,12 +2,12 @@
 <div class="{{ margin_class }} space-y-3">
     {% for category, points in breakdown.items() %}
     <div>
-        <div class="flex justify-between text-xs text-slate-500">
+        <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400">
             <span class="capitalize">{{ category.replace('_', ' ') }}</span>
             <span>{{ points }} / {{ max_breakdown[category] }}</span>
         </div>
-        <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-            <div class="h-2 rounded-full bg-indigo-500"
+        <div class="mt-1 h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+            <div class="h-2 rounded-full bg-indigo-500 dark:bg-indigo-400"
                  style="width: {{ (points / max_breakdown[category] * 100) if max_breakdown[category] else 0 }}%"></div>
         </div>
     </div>

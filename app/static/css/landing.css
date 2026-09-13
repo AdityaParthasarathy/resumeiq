@@ -2,20 +2,41 @@
    Loaded only on the landing page; the dashboard/error pages don't need it. */
 
 :root {
-    --ink: #0b0e14;
-    --ink-soft: #3f3f46;
-    --paper: #faf9f7;
-    --paper-line: #e7e5e1;
+    --ink: #12151c;
+    --ink-soft: #4b5163;
+    --paper: #eef0f3;
+    --paper-line: #dce0e6;
     --surface: #ffffff;
-    --muted: #8a8f98;
+    --muted: #8d93a3;
     --brand: #4f46e5;
     --brand-deep: #3730a3;
+    --brand-soft: #eef2ff;
+    --brand-soft-border: #dfe3fb;
     --pen: #b45309;
     --pen-soft: #fef3e2;
     --good: #059669;
     --good-soft: #ecfdf5;
     --weak: #b91c1c;
     --weak-soft: #fef2f2;
+}
+
+:root.dark {
+    --ink: #f5f5f0;
+    --ink-soft: #b8bac2;
+    --paper: #14151a;
+    --paper-line: #2b2e38;
+    --surface: #1d1f27;
+    --muted: #6e7180;
+    --brand: #818cf8;
+    --brand-deep: #a5b4fc;
+    --brand-soft: #24273b;
+    --brand-soft-border: #323655;
+    --pen: #fbbf24;
+    --pen-soft: #3a2e15;
+    --good: #34d399;
+    --good-soft: #123024;
+    --weak: #f87171;
+    --weak-soft: #3a1414;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -166,12 +187,12 @@
 .resume-mock__tag--good { background: var(--good-soft); color: var(--good); }
 .resume-mock__tag--weak { background: var(--weak-soft); color: var(--weak); }
 .resume-mock__tag--pen { background: var(--pen-soft); color: var(--pen); }
-.resume-mock__tag--brand { background: #eef2ff; color: var(--brand-deep); }
+.resume-mock__tag--brand { background: var(--brand-soft); color: var(--brand-deep); }
 
 /* Show only the tags belonging to the active layer; highlight the row they sit on.
    The impact layer stays highlighted through the "feedback" step too, so the
    final step reads as a synthesis of what came before rather than a reset. */
-.resume-mock[data-active="score"] .resume-mock__row[data-layer="score"] { background: #eef2ff; }
+.resume-mock[data-active="score"] .resume-mock__row[data-layer="score"] { background: var(--brand-soft); }
 .resume-mock[data-active="score"] .resume-mock__tag[data-layer="score"],
 .resume-mock[data-active="ats"] .resume-mock__tag[data-layer="ats"],
 .resume-mock[data-active="impact"] .resume-mock__tag[data-layer="impact"],
@@ -182,15 +203,15 @@
 }
 .resume-mock[data-active="ats"] .resume-mock__row[data-layer="ats"] { background: var(--pen-soft); }
 .resume-mock[data-active="impact"] .resume-mock__row[data-layer="impact"],
-.resume-mock[data-active="feedback"] .resume-mock__row[data-layer="impact"] { background: #eef2ff; }
+.resume-mock[data-active="feedback"] .resume-mock__row[data-layer="impact"] { background: var(--brand-soft); }
 
 .resume-mock__note {
     display: none;
     margin-top: 0.85rem;
     padding: 0.85rem 1rem;
     border-radius: 12px;
-    background: #eef2ff;
-    border: 1px solid #dfe3fb;
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-soft-border);
     font-size: 0.78rem;
     color: var(--brand-deep);
     line-height: 1.5;
