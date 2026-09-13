@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}ResumeIQ{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-mark.png') }}" />
     <script>
         // Apply the stored/system theme before first paint, so there's no
         // flash of the wrong theme. Must run before Tailwind's CDN script.
@@ -37,8 +37,8 @@
 <body class="bg-[#eef0f3] dark:bg-[#14151a] text-[#12151c] dark:text-[#f5f5f0] min-h-screen flex flex-col transition-colors">
     <header class="sticky top-0 z-30 border-b border-[#dce0e6] dark:border-[#2b2e38] bg-[#eef0f3]/85 dark:bg-[#14151a]/85 backdrop-blur transition-colors">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-            <a href="{{ url_for('main.index') }}" class="flex items-center gap-2.5">
-                <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-indigo-600 text-white text-sm font-bold">R</span>
+            <a href="{{ url_for('main.index') }}" class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="" class="h-7 w-7" />
                 <span class="text-[15px] font-semibold tracking-tight">ResumeIQ</span>
             </a>
             <nav class="flex items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
@@ -85,7 +85,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex flex-wrap items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                    <span class="inline-flex h-5 w-5 items-center justify-center rounded bg-indigo-600 text-white text-[11px] font-bold">R</span>
+                    <img src="{{ url_for('static', filename='img/logo-mark.png') }}" alt="" class="h-5 w-5" />
                     <span class="font-medium text-slate-600 dark:text-slate-300">ResumeIQ</span>
                     <span class="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 text-[11px] font-medium text-indigo-600 dark:text-indigo-400">
                         Rule-based &middot; No LLM
