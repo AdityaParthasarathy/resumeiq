@@ -31,6 +31,113 @@
         @media (prefers-reduced-motion: reduce) {
             .footer-ring-value { animation: none; stroke-dashoffset: 0; }
         }
+
+        /* ==================================================================
+           Button interaction system (site-wide: every page extends this file)
+           ------------------------------------------------------------------
+           One shared motion language for every clickable control: ease-out
+           curves, ~220-320ms, a small lift on hover, scale(0.97) on press.
+           Each variant layers exactly one distinguishing idea on top rather
+           than stacking effects, so the hierarchy stays legible:
+             .btn-primary  -- solid CTA: lift + shadow bloom + icon travel
+             .btn-secondary -- bordered action: fill sweep + tiny lift
+             .btn-ghost     -- text link: sweeping underline + arrow travel
+             .btn-icon      -- icon-only control: rotate/scale, no travel
+             .btn-nav       -- compact header pill: lift + arrow reveal
+           ================================================================== */
+        :root { --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .btn-primary, .btn-secondary, .btn-nav, .btn-icon {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary {
+            transition: transform 0.28s var(--ease-out-smooth), box-shadow 0.32s var(--ease-out-smooth),
+                        background-color 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 28px -12px rgba(79, 70, 229, 0.5);
+            filter: brightness(1.04);
+        }
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.97);
+            transition-duration: 0.1s;
+            filter: brightness(0.99);
+        }
+        .btn-primary:disabled, .btn-primary:disabled:hover {
+            transform: none; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); filter: none;
+        }
+        .btn-primary svg { transition: transform 0.3s var(--ease-out-smooth); }
+        .btn-primary:hover svg { transform: translateX(3px); }
+
+        .btn-secondary {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform 0.22s var(--ease-out-smooth), box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .btn-secondary::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: currentColor;
+            opacity: 0;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.32s var(--ease-out-smooth), opacity 0.25s ease;
+        }
+        .btn-secondary:hover::before { transform: scaleX(1); opacity: 0.06; }
+        .btn-secondary:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -12px rgba(15, 23, 42, 0.35); }
+        .btn-secondary:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
+
+        .btn-ghost {
+            background-image: linear-gradient(currentColor, currentColor);
+            background-position: 0 100%;
+            background-repeat: no-repeat;
+            background-size: 0% 1px;
+            transition: background-size 0.3s var(--ease-out-smooth), color 0.2s ease;
+        }
+        .btn-ghost:hover { background-size: 100% 1px; }
+        .btn-ghost svg, .btn-ghost-arrow {
+            display: inline-block;
+            transition: transform 0.3s var(--ease-out-smooth);
+        }
+        .btn-ghost:hover svg, .btn-ghost:hover .btn-ghost-arrow { transform: translateX(4px); }
+        .btn-ghost--down:hover svg { transform: translateY(4px); }
+        .btn-ghost--back:hover .btn-ghost-arrow { transform: translateX(-4px); }
+
+        .btn-icon { transition: transform 0.2s var(--ease-out-smooth), background-color 0.2s ease; }
+        .btn-icon svg { transition: transform 0.35s var(--ease-out-smooth); }
+        .btn-icon:hover svg { transform: rotate(20deg) scale(1.08); }
+        .btn-icon:active { transform: scale(0.88); transition-duration: 0.1s; }
+        .btn-icon:active svg { transform: scale(0.92); }
+
+        .btn-nav { transition: transform 0.22s var(--ease-out-smooth), box-shadow 0.25s ease, background-color 0.2s ease; }
+        .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(79, 70, 229, 0.45); }
+        .btn-nav:active { transform: translateY(0) scale(0.96); transition-duration: 0.1s; }
+        .btn-nav-arrow {
+            display: inline-block;
+            transform: translateX(-3px);
+            opacity: 0;
+            transition: transform 0.28s var(--ease-out-smooth), opacity 0.22s ease;
+        }
+        .btn-nav:hover .btn-nav-arrow { transform: translateX(0); opacity: 1; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn-primary, .btn-secondary, .btn-ghost, .btn-icon, .btn-nav,
+            .btn-primary svg, .btn-secondary::before, .btn-ghost svg,
+            .btn-ghost-arrow, .btn-icon svg, .btn-nav-arrow {
+                transition: none !important;
+            }
+            .btn-primary:hover, .btn-secondary:hover, .btn-nav:hover,
+            .btn-primary:active, .btn-secondary:active, .btn-nav:active, .btn-icon:active {
+                transform: none !important;
+            }
+            .btn-nav-arrow { opacity: 1; transform: none; }
+        }
     </style>
     {% block head %}{% endblock %}
 </head>
@@ -42,9 +149,9 @@
                 <span class="text-[15px] font-semibold tracking-tight">ResumeIQ</span>
             </a>
             <nav class="flex items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
-                <a href="{{ url_for('main.index') }}#how-it-works" class="hidden sm:inline hover:text-slate-900 dark:hover:text-white transition-colors">How it works</a>
+                <a href="{{ url_for('main.index') }}#how-it-works" class="btn-ghost hidden sm:inline hover:text-slate-900 dark:hover:text-white">How it works</a>
                 <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                        class="btn-icon inline-flex h-8 w-8 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
                     <svg class="h-4 w-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="4.2" />
                         <line x1="12" y1="1.5" x2="12" y2="4" />
@@ -59,8 +166,9 @@
                     <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" clip-rule="evenodd"/></svg>
                 </button>
                 <a href="{{ url_for('main.index') }}#analyze"
-                   class="inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 transition-colors">
+                   class="btn-nav inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500">
                     Analyze resume
+                    <span class="btn-nav-arrow" aria-hidden="true">&rarr;</span>
                 </a>
             </nav>
         </div>
@@ -103,9 +211,9 @@
                     </span>
                 </div>
                 <nav class="flex items-center gap-5 text-sm text-slate-400 dark:text-slate-500">
-                    <a href="{{ url_for('main.index') }}#how-it-works" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">How it works</a>
-                    <a href="{{ url_for('main.index') }}#analyze" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">Analyze resume</a>
-                    <a href="https://github.com/AdityaParthasarathy/resumeiq" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">GitHub</a>
+                    <a href="{{ url_for('main.index') }}#how-it-works" class="btn-ghost hover:text-slate-700 dark:hover:text-slate-300">How it works</a>
+                    <a href="{{ url_for('main.index') }}#analyze" class="btn-ghost hover:text-slate-700 dark:hover:text-slate-300">Analyze resume</a>
+                    <a href="https://github.com/AdityaParthasarathy/resumeiq" class="btn-ghost hover:text-slate-700 dark:hover:text-slate-300">GitHub</a>
                 </nav>
             </div>
             <div class="mt-4 pt-4 border-t border-[#dce0e6] dark:border-[#2b2e38] flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs text-slate-400 dark:text-slate-500">

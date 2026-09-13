@@ -67,17 +67,9 @@
     .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* ---- primary CTA: restrained lift, not a "magnetic" gimmick ---- */
-.btn-primary {
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.2s ease;
-}
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px -8px rgba(79, 70, 229, 0.45);
-}
-@media (prefers-reduced-motion: reduce) {
-    .btn-primary:hover { transform: none; }
-}
+/* ---- primary CTA: restrained lift, not a "magnetic" gimmick ----
+   Full .btn-primary/.btn-secondary/.btn-ghost/.btn-icon/.btn-nav system
+   lives in base.html so it applies site-wide, not just this page. ---- */
 
 /* ================= resume mock (the recurring visual motif) ================= */
 .resume-mock {
