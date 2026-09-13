@@ -54,6 +54,10 @@
             </a>
         </div>
 
+        {% if context_note %}
+        <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">{{ context_note }}</p>
+        {% endif %}
+
         <div class="mt-6">
             <canvas id="overviewChart" height="90"></canvas>
         </div>
@@ -179,7 +183,20 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p class="mt-4 text-sm text-slate-400 dark:text-slate-500">No bulleted lines detected &mdash; use "-" or "&bull;" markers under Experience/Projects to enable impact analysis.</p>
+            <div class="mt-4 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 p-4">
+                <p class="text-sm text-slate-400 dark:text-slate-500">No bulleted lines detected &mdash; use "-" or "&bull;" markers under Experience/Projects to enable impact analysis.</p>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <div class="rounded-md bg-red-50 dark:bg-red-500/10 px-3 py-2">
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-red-500 dark:text-red-400">Weak</p>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Worked on a sales dashboard project.</p>
+                    </div>
+                    <div class="rounded-md bg-emerald-50 dark:bg-emerald-500/10 px-3 py-2">
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">Strong</p>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">- Built a sales dashboard in Python and SQL, cutting manual reporting time by 5 hours/week.</p>
+                    </div>
+                </div>
+                <p class="mt-2 text-xs text-slate-400 dark:text-slate-500">Start with a verb, name the tool, end with a number.</p>
+            </div>
             {% endif %}
         </div>
 
@@ -206,6 +223,26 @@
                 {% endfor %}
             </ul>
         </div>
+
+        {% if top_fixes %}
+        <div class="mt-8 rounded-2xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/60 dark:bg-indigo-500/5 p-6">
+            <h2 class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">Start here</h2>
+            <p class="mt-1 text-xs text-indigo-600/80 dark:text-indigo-400/80">
+                These {{ top_fixes|length }} change{{ "s" if top_fixes|length != 1 else "" }} will move your score the most &mdash; fix them, then re-upload.
+            </p>
+            <ol class="mt-4 space-y-2">
+                {% for s in top_fixes %}
+                <li class="flex gap-2 text-sm text-slate-700 dark:text-slate-200">
+                    <span class="font-semibold text-indigo-500 dark:text-indigo-400">{{ loop.index }}.</span>
+                    <span><strong>{{ s.category }}:</strong> {{ s.message }}</span>
+                </li>
+                {% endfor %}
+            </ol>
+            <a href="{{ url_for('main.index') }}#analyze" class="mt-5 inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors">
+                Fixed these? Re-upload your resume
+            </a>
+        </div>
+        {% endif %}
 
         <h2 class="mt-8 text-sm font-medium text-slate-700 dark:text-slate-200">Extracted text preview</h2>
         <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4 text-xs text-slate-600 dark:text-slate-400">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>

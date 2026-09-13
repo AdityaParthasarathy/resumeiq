@@ -7,7 +7,8 @@ from werkzeug.utils import secure_filename
 from app.extensions import db
 from app.models import Analysis, Resume
 from app.services.ats_matcher import check_ats_keywords
-from app.services.feedback import generate_feedback
+from app.services.benchmarks import score_context_note
+from app.services.feedback import generate_feedback, top_priority_suggestions
 from app.services.impact_score import analyze_impact
 from app.services.parser import ParsingError, extract_text
 from app.services.roles import TARGET_ROLES
@@ -100,6 +101,11 @@ def preview(resume_id):
         impact = analysis.impact_result
         feedback = analysis.feedback
 
+    # Presentational-only, derived fresh on every view (cheap, no spaCy) so
+    # they never need to be stored alongside the persisted analysis.
+    context_note = score_context_note(score, ats, impact)
+    top_fixes = top_priority_suggestions(feedback)
+
     return render_template(
         "resume_preview.html",
         resume=resume,
@@ -107,4 +113,6 @@ def preview(resume_id):
         ats=ats,
         impact=impact,
         feedback=feedback,
+        context_note=context_note,
+        top_fixes=top_fixes,
     )

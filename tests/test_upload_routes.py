@@ -151,6 +151,23 @@ def test_preview_page_renders_extracted_text():
     assert b"Parsed successfully" in response.data
 
 
+def test_preview_page_shows_early_career_context_note_and_start_here_cta():
+    _, client = _client()
+    data = {
+        "target_role": "Backend Developer",
+        "resume": (io.BytesIO(_read_fixture("sample_resume.docx")), "sample_resume.docx"),
+    }
+    upload_response = client.post("/upload", data=data, content_type="multipart/form-data")
+    resume_url = upload_response.headers["Location"]
+
+    response = client.get(resume_url)
+
+    assert response.status_code == 200
+    assert b"early-career" in response.data
+    assert b"Start here" in response.data
+    assert b"Re-upload your resume" in response.data
+
+
 def test_preview_page_persists_analysis_and_reuses_it_on_second_visit():
     app, client = _client()
     data = {

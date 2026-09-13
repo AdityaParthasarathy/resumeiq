@@ -122,8 +122,9 @@ def _ats_suggestions(ats):
             _suggest(
                 "high",
                 "ATS Keywords",
-                f"For the {ats['role']} role, add these must-have keywords if you have the "
-                f"experience: {_keyword_list(must_missing)}.",
+                f"For the {ats['role']} role, add these must-have keywords if you've genuinely "
+                f"used them -- coursework, a personal project, or an internship all count, but "
+                f"don't list a tool you haven't touched: {_keyword_list(must_missing)}.",
             )
         )
     if nice_missing and not must_missing:
@@ -131,8 +132,8 @@ def _ats_suggestions(ats):
             _suggest(
                 "medium",
                 "ATS Keywords",
-                f"Consider adding these nice-to-have keywords for {ats['role']}: "
-                f"{_keyword_list(nice_missing)}.",
+                f"Consider adding these nice-to-have keywords for {ats['role']} if they apply to "
+                f"work you've actually done: {_keyword_list(nice_missing)}.",
             )
         )
     return suggestions
@@ -283,3 +284,12 @@ def generate_feedback(score, ats, impact):
 
     suggestions.sort(key=lambda s: PRIORITY_ORDER[s["priority"]])
     return suggestions
+
+
+def top_priority_suggestions(feedback, limit=3):
+    """The handful of items worth fixing before anything else -- critical/high
+    priority first, falling back to whatever's first in the (already
+    priority-sorted) list when nothing is that urgent.
+    """
+    urgent = [s for s in feedback if s["priority"] in ("critical", "high")]
+    return (urgent or feedback)[:limit]

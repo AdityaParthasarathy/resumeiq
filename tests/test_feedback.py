@@ -1,7 +1,7 @@
 import os
 
 from app.services.ats_matcher import check_ats_keywords
-from app.services.feedback import PRIORITY_ORDER, generate_feedback
+from app.services.feedback import PRIORITY_ORDER, generate_feedback, top_priority_suggestions
 from app.services.impact_score import analyze_impact
 from app.services.parser import extract_text
 from app.services.scorer import score_resume
@@ -205,3 +205,46 @@ def test_keyword_list_truncates_long_missing_lists():
 
     assert "A, B, C, D, E" in ats_suggestion["message"]
     assert "2 more" in ats_suggestion["message"]
+
+
+def test_ats_keyword_suggestion_tells_user_not_to_pad_experience():
+    score, ats, impact = _analyze("sample_resume.docx", "docx", "Backend Developer")
+
+    suggestions = generate_feedback(score, ats, impact)
+    ats_suggestion = next(s for s in suggestions if s["category"] == "ATS Keywords")
+
+    assert "coursework" in ats_suggestion["message"]
+    assert "haven't touched" in ats_suggestion["message"]
+
+
+def test_top_priority_suggestions_prefers_critical_and_high():
+    feedback = [
+        {"priority": "low", "category": "A", "message": "a"},
+        {"priority": "critical", "category": "B", "message": "b"},
+        {"priority": "medium", "category": "C", "message": "c"},
+        {"priority": "high", "category": "D", "message": "d"},
+    ]
+
+    top = top_priority_suggestions(feedback, limit=3)
+
+    assert [s["category"] for s in top] == ["B", "D"]
+
+
+def test_top_priority_suggestions_falls_back_when_nothing_urgent():
+    feedback = [
+        {"priority": "low", "category": "A", "message": "a"},
+        {"priority": "medium", "category": "B", "message": "b"},
+        {"priority": "info", "category": "C", "message": "c"},
+    ]
+
+    top = top_priority_suggestions(feedback, limit=2)
+
+    assert [s["category"] for s in top] == ["A", "B"]
+
+
+def test_top_priority_suggestions_respects_limit():
+    feedback = [{"priority": "critical", "category": str(i), "message": "x"} for i in range(5)]
+
+    top = top_priority_suggestions(feedback, limit=3)
+
+    assert len(top) == 3
