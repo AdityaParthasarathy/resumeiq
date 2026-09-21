@@ -39,59 +39,136 @@
            curves, ~220-320ms, a small lift on hover, scale(0.97) on press.
            Each variant layers exactly one distinguishing idea on top rather
            than stacking effects, so the hierarchy stays legible:
-             .btn-primary  -- solid CTA: lift + shadow bloom + icon travel
-             .btn-secondary -- bordered action: fill sweep + tiny lift
+             .btn-ihb       -- every solid/bordered button (CTAs, nav pill, print):
+                               a neon indigo->amber frame + glow; on hover a
+                               gradient dot floods the pill while the label
+                               slides out and an arrow label slides in
              .btn-ghost     -- text link: sweeping underline + arrow travel
              .btn-icon      -- icon-only control: rotate/scale, no travel
-             .btn-nav       -- compact header pill: lift + arrow reveal
            ================================================================== */
         :root { --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1); }
 
-        .btn-primary, .btn-secondary, .btn-nav, .btn-icon {
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --ihb-bg: #ffffff;
+            --ihb-text: #12151c;
+            --ihb-fill-text: #ffffff;
+            --neon-a: #4f46e5;   /* brand indigo */
+            --neon-b: #f59e0b;   /* the amber accent from the logo mark */
+            --neon-glow: 0.55;
+        }
+        .dark {
+            --ihb-bg: #1d1f27;
+            --ihb-text: #f5f5f0;
+            --neon-a: #6366f1;
+            --neon-b: #fbbf24;
+            --neon-glow: 0.7;
         }
 
-        .btn-primary {
-            transition: transform 0.28s var(--ease-out-smooth), box-shadow 0.32s var(--ease-out-smooth),
-                        background-color 0.2s ease, filter 0.2s ease;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 28px -12px rgba(79, 70, 229, 0.5);
-            filter: brightness(1.04);
-        }
-        .btn-primary:active {
-            transform: translateY(-1px) scale(0.97);
-            transition-duration: 0.1s;
-            filter: brightness(0.99);
-        }
-        .btn-primary:disabled, .btn-primary:disabled:hover {
-            transform: none; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); filter: none;
-        }
-        .btn-primary svg { transition: transform 0.3s var(--ease-out-smooth); }
-        .btn-primary:hover svg { transform: translateX(3px); }
+        .btn-ihb, .btn-icon { -webkit-tap-highlight-color: transparent; }
 
-        .btn-secondary {
+        /* Neon gradient button: an indigo->amber frame that slowly drifts, with
+           a blurred copy behind it as the glow (Magic UI "neon gradient card"
+           technique), wrapped around the interactive-hover-button fill.
+           Padding, radius and font size come from the utility classes. */
+        .btn-ihb {
+            --neon-border: 2px;
+            --neon-blur: 16px;
             position: relative;
-            overflow: hidden;
             isolation: isolate;
-            transition: transform 0.22s var(--ease-out-smooth), box-shadow 0.25s ease, border-color 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--ihb-text);
+            transition: transform 0.15s var(--ease-out-smooth);
         }
-        .btn-secondary::before {
+        .btn-ihb::before, .btn-ihb::after {
             content: "";
             position: absolute;
-            inset: 0;
+            inset: calc(var(--neon-border) * -1);
             z-index: -1;
-            background: currentColor;
-            opacity: 0;
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.32s var(--ease-out-smooth), opacity 0.25s ease;
+            border-radius: inherit;
+            background: linear-gradient(0deg, var(--neon-a), var(--neon-b));
+            background-size: 100% 200%;
+            animation: neon-drift 6s ease-in-out infinite alternate;
         }
-        .btn-secondary:hover::before { transform: scaleX(1); opacity: 0.06; }
-        .btn-secondary:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -12px rgba(15, 23, 42, 0.35); }
-        .btn-secondary:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
+        .btn-ihb::after {
+            filter: blur(var(--neon-blur));
+            opacity: calc(var(--neon-glow) * 0.6);
+            transition: opacity 0.35s ease;
+        }
+        .btn-ihb:hover::after { opacity: var(--neon-glow); }
+        @keyframes neon-drift { from { background-position: 50% 0%; } to { background-position: 50% 100%; } }
+        .btn-ihb:active { transform: scale(0.97); }
+        .btn-ihb:focus-visible { outline: 2px solid var(--neon-b); outline-offset: 4px; }
+
+        /* Clipped inner surface: holds the growing dot and the hover label. */
+        .btn-ihb__face {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: inherit;
+            background: var(--ihb-bg);
+        }
+        .btn-ihb__dot {
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            margin-top: -4px;
+            border-radius: 9999px;
+            background: var(--neon-a);
+            transition: transform 0.45s var(--ease-out-smooth);
+        }
+        .btn-ihb:hover .btn-ihb__dot { transform: scale(150); }
+
+        .btn-ihb__label {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 0.85rem;
+            white-space: nowrap;
+            transition: transform 0.35s var(--ease-out-smooth), opacity 0.25s ease;
+        }
+        .btn-ihb:hover .btn-ihb__label { transform: translateX(3rem); opacity: 0; }
+
+        .btn-ihb__hover {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            color: var(--ihb-fill-text);
+            text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35);
+            opacity: 0;
+            transform: translateX(3rem);
+            transition: transform 0.35s var(--ease-out-smooth), opacity 0.25s ease;
+        }
+        .btn-ihb:hover .btn-ihb__hover { transform: translateX(0); opacity: 1; }
+
+        /* Submit in-flight: hold the filled state, no hover choreography. The
+           label stays in the DOM (opacity 0) so assistive tech still reads it. */
+        .btn-ihb:disabled { cursor: not-allowed; }
+        .btn-ihb:disabled .btn-ihb__dot { transform: scale(150); transition: none; }
+        .btn-ihb:disabled .btn-ihb__label { opacity: 0; transform: none; transition: none; }
+        .btn-ihb:disabled .btn-ihb__hover { opacity: 1; transform: none; transition: none; }
+
+        /* Site-wide particle field (see js/particles.js): fixed behind all content. */
+        #bg-particles {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
 
         .btn-ghost {
             background-image: linear-gradient(currentColor, currentColor);
@@ -115,33 +192,21 @@
         .btn-icon:active { transform: scale(0.88); transition-duration: 0.1s; }
         .btn-icon:active svg { transform: scale(0.92); }
 
-        .btn-nav { transition: transform 0.22s var(--ease-out-smooth), box-shadow 0.25s ease, background-color 0.2s ease; }
-        .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(79, 70, 229, 0.45); }
-        .btn-nav:active { transform: translateY(0) scale(0.96); transition-duration: 0.1s; }
-        .btn-nav-arrow {
-            display: inline-block;
-            transform: translateX(-3px);
-            opacity: 0;
-            transition: transform 0.28s var(--ease-out-smooth), opacity 0.22s ease;
-        }
-        .btn-nav:hover .btn-nav-arrow { transform: translateX(0); opacity: 1; }
-
         @media (prefers-reduced-motion: reduce) {
-            .btn-primary, .btn-secondary, .btn-ghost, .btn-icon, .btn-nav,
-            .btn-primary svg, .btn-secondary::before, .btn-ghost svg,
-            .btn-ghost-arrow, .btn-icon svg, .btn-nav-arrow {
+            .btn-ihb, .btn-ghost, .btn-icon,
+            .btn-ihb__dot, .btn-ihb__label, .btn-ihb__hover,
+            .btn-ihb::before, .btn-ihb::after,
+            .btn-ghost svg, .btn-ghost-arrow, .btn-icon svg {
                 transition: none !important;
             }
-            .btn-primary:hover, .btn-secondary:hover, .btn-nav:hover,
-            .btn-primary:active, .btn-secondary:active, .btn-nav:active, .btn-icon:active {
-                transform: none !important;
-            }
-            .btn-nav-arrow { opacity: 1; transform: none; }
+            .btn-ihb::before, .btn-ihb::after { animation: none !important; }
+            .btn-ihb:active, .btn-icon:active { transform: none !important; }
         }
     </style>
     {% block head %}{% endblock %}
 </head>
 <body class="bg-[#eef0f3] dark:bg-[#14151a] text-[#12151c] dark:text-[#f5f5f0] min-h-screen flex flex-col transition-colors">
+    <canvas id="bg-particles" aria-hidden="true"></canvas>
     <header class="sticky top-0 z-30 border-b border-[#dce0e6] dark:border-[#2b2e38] bg-[#eef0f3]/85 dark:bg-[#14151a]/85 backdrop-blur transition-colors">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <a href="{{ url_for('main.index') }}" class="flex items-center gap-2">
@@ -166,9 +231,9 @@
                     <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" clip-rule="evenodd"/></svg>
                 </button>
                 <a href="{{ url_for('main.index') }}#analyze"
-                   class="btn-nav inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500">
-                    Analyze resume
-                    <span class="btn-nav-arrow" aria-hidden="true">&rarr;</span>
+                   class="btn-ihb rounded-full px-4 py-2 text-xs">
+                    <span class="btn-ihb__face" aria-hidden="true"><span class="btn-ihb__dot"></span><span class="btn-ihb__hover">Analyze resume <span>&rarr;</span></span></span>
+                    <span class="btn-ihb__label">Analyze resume</span>
                 </a>
             </nav>
         </div>
@@ -189,7 +254,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-[#dce0e6] dark:border-[#2b2e38] bg-[#eef0f3] dark:bg-[#14151a] transition-colors">
+    <footer class="border-t border-[#dce0e6] dark:border-[#2b2e38] bg-[#eef0f3]/70 dark:bg-[#14151a]/70 transition-colors">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex flex-wrap items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400">
@@ -238,6 +303,7 @@
         })();
     </script>
 
+    <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

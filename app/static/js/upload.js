@@ -53,7 +53,7 @@
     if (form && submitBtn) {
         form.addEventListener("submit", () => {
             submitBtn.disabled = true;
-            submitBtn.textContent = "Analyzing…";
+            submitBtn.querySelectorAll(".btn-ihb__label, .btn-ihb__hover").forEach((el) => (el.textContent = "Analyzing…"));
         });
     }
 })();
