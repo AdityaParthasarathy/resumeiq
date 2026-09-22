@@ -1,0 +1,11 @@
+# Prevent line-ending conversion on binary files -- git's own content
+# sniffing already skips them, but this removes the misleading "LF will be
+# replaced by CRLF" warning and makes the intent explicit for future files.
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
