@@ -282,8 +282,16 @@
         </div>
         {% endif %}
 
-        <h2 class="mt-8 text-sm font-medium text-slate-700 dark:text-slate-200">Extracted text preview</h2>
-        <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4 text-xs text-slate-600 dark:text-slate-400">{{ resume.raw_text[:2000] }}{% if resume.raw_text|length > 2000 %}&hellip;{% endif %}</pre>
+        <div class="mt-8 flex items-center justify-between flex-wrap gap-2">
+            <h2 class="text-sm font-medium text-slate-700 dark:text-slate-200">Extracted text preview</h2>
+            <div class="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500">
+                <span class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-sm bg-emerald-200 dark:bg-emerald-500/30"></span> exact</span>
+                <span class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-sm bg-sky-200 dark:bg-sky-500/30"></span> synonym</span>
+                <span class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-sm bg-amber-200 dark:bg-amber-500/30"></span> fuzzy</span>
+            </div>
+        </div>
+        <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">Highlighted words are the {{ resume.target_role }} keywords the ATS check above found &mdash; see exactly what it matched and how.</p>
+        <pre class="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4 text-xs text-slate-600 dark:text-slate-400">{{ preview_html }}</pre>
     </div>
 </section>
 {% endblock %}
