@@ -1,7 +1,8 @@
 import os
+import re
 import uuid
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, Response, current_app, flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
 
 from app.extensions import db
@@ -11,6 +12,7 @@ from app.services.benchmarks import score_benchmarks, score_context_note
 from app.services.feedback import generate_feedback, top_priority_suggestions
 from app.services.impact_score import analyze_impact
 from app.services.parser import ParsingError, extract_text
+from app.services.pdf_report import build_report_pdf
 from app.services.roles import TARGET_ROLES
 from app.services.scorer import score_resume
 
@@ -70,13 +72,12 @@ def upload():
     return redirect(url_for("upload.preview", resume_id=resume.id))
 
 
-@upload_bp.route("/resume/<int:resume_id>")
-def preview(resume_id):
-    resume = Resume.query.get_or_404(resume_id)
-
-    # A resume's raw_text and target_role are immutable after upload, so the
-    # analysis is deterministic -- compute it once and reuse on later visits
-    # instead of re-running spaCy on every page view.
+def _get_or_create_analysis(resume):
+    """A resume's raw_text and target_role are immutable after upload, so the
+    analysis is deterministic -- compute it once and reuse on later visits
+    instead of re-running spaCy every time. Shared by the HTML report and the
+    PDF export so they can never disagree with each other.
+    """
     analysis = Analysis.query.filter_by(resume_id=resume.id).first()
 
     if analysis is None:
@@ -95,11 +96,15 @@ def preview(resume_id):
         )
         db.session.add(analysis)
         db.session.commit()
-    else:
-        score = analysis.score_breakdown
-        ats = analysis.ats_result
-        impact = analysis.impact_result
-        feedback = analysis.feedback
+        return score, ats, impact, feedback
+
+    return analysis.score_breakdown, analysis.ats_result, analysis.impact_result, analysis.feedback
+
+
+@upload_bp.route("/resume/<int:resume_id>")
+def preview(resume_id):
+    resume = Resume.query.get_or_404(resume_id)
+    score, ats, impact, feedback = _get_or_create_analysis(resume)
 
     # Presentational-only, derived fresh on every view (cheap, no spaCy) so
     # they never need to be stored alongside the persisted analysis.
@@ -121,4 +126,23 @@ def preview(resume_id):
         role_fit=role_fit,
         preview_html=preview_html,
         benchmarks=benchmarks,
+    )
+
+
+@upload_bp.route("/resume/<int:resume_id>/report.pdf")
+def download_pdf(resume_id):
+    resume = Resume.query.get_or_404(resume_id)
+    score, ats, impact, feedback = _get_or_create_analysis(resume)
+    role_fit = role_fit_across_roles(resume.raw_text, resume.target_role)
+    benchmarks = score_benchmarks(score["total"], ats["ats_score"], impact.get("impact_score"))
+
+    pdf_bytes = build_report_pdf(resume, score, ats, impact, feedback, role_fit, benchmarks)
+
+    base_name = re.sub(r"\.\w+$", "", resume.original_filename) or "resume"
+    download_name = f"ResumeIQ-{secure_filename(base_name)}-report.pdf"
+
+    return Response(
+        pdf_bytes,
+        mimetype="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{download_name}"'},
     )

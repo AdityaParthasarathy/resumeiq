@@ -192,3 +192,43 @@ def test_preview_page_persists_analysis_and_reuses_it_on_second_visit():
         assert 0 <= analysis.score <= 100
         assert isinstance(analysis.feedback, list)
         db.session.remove()
+
+
+def test_pdf_report_downloads_as_attachment():
+    app, client = _client()
+    data = {
+        "target_role": "AI Engineer",
+        "resume": (io.BytesIO(_read_fixture("sample_resume.pdf")), "sample_resume.pdf"),
+    }
+    upload_response = client.post("/upload", data=data, content_type="multipart/form-data")
+    resume_url = upload_response.headers["Location"]
+
+    response = client.get(resume_url + "/report.pdf")
+
+    assert response.status_code == 200
+    assert response.mimetype == "application/pdf"
+    assert "attachment" in response.headers["Content-Disposition"]
+    assert response.data.startswith(b"%PDF")
+
+    with app.app_context():
+        from app.models import Analysis
+
+        # The PDF route reuses the same cached analysis as the HTML report
+        # rather than computing (and possibly diverging) its own.
+        assert Analysis.query.count() == 1
+        db.session.remove()
+
+
+def test_pdf_report_handles_resume_with_no_bullets():
+    _, client = _client()
+    data = {
+        "target_role": "Data Analyst",
+        "resume": (io.BytesIO(_read_fixture("sample_resume.docx")), "sample_resume.docx"),
+    }
+    upload_response = client.post("/upload", data=data, content_type="multipart/form-data")
+    resume_url = upload_response.headers["Location"]
+
+    response = client.get(resume_url + "/report.pdf")
+
+    assert response.status_code == 200
+    assert response.data.startswith(b"%PDF")

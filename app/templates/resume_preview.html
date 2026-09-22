@@ -19,10 +19,16 @@
         <a href="{{ url_for('main.index') }}" class="btn-ghost btn-ghost--back inline-flex items-center gap-1 text-sm text-indigo-600 dark:text-indigo-400">
             <span class="btn-ghost-arrow" aria-hidden="true">&larr;</span> Upload another resume
         </a>
-        <button onclick="window.print()" class="btn-ihb no-print rounded-lg px-4 py-1.5 text-xs">
-            <span class="btn-ihb__face" aria-hidden="true"><span class="btn-ihb__dot"></span><span class="btn-ihb__hover">Print / Save as PDF <span>&rarr;</span></span></span>
-            <span class="btn-ihb__label">Print / Save as PDF</span>
-        </button>
+        <div class="no-print flex items-center gap-2">
+            <a href="{{ url_for('upload.download_pdf', resume_id=resume.id) }}" class="btn-ihb rounded-lg px-4 py-1.5 text-xs">
+                <span class="btn-ihb__face" aria-hidden="true"><span class="btn-ihb__dot"></span><span class="btn-ihb__hover">Download PDF report <span>&rarr;</span></span></span>
+                <span class="btn-ihb__label">Download PDF report</span>
+            </a>
+            <button onclick="window.print()" class="btn-ihb rounded-lg px-4 py-1.5 text-xs">
+                <span class="btn-ihb__face" aria-hidden="true"><span class="btn-ihb__dot"></span><span class="btn-ihb__hover">Print page <span>&rarr;</span></span></span>
+                <span class="btn-ihb__label">Print page</span>
+            </button>
+        </div>
     </div>
 
     <div class="mt-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-8 transition-colors">
