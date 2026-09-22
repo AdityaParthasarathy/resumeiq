@@ -129,6 +129,40 @@
             {% endfor %}
         </div>
 
+        <div id="role-fit-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                    <h2 class="text-sm font-medium text-slate-700 dark:text-slate-200">Role Fit Across Roles</h2>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">The same resume, scored against every role's keyword bank &mdash; not just {{ resume.target_role }}.</p>
+                </div>
+            </div>
+
+            {% set best = role_fit[0] %}
+            {% if not best.is_target and best.ats_score - ats.ats_score >= 8 %}
+            <p class="mt-4 rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/30 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+                This resume actually matches <strong>{{ best.role }}</strong> keywords better ({{ best.ats_score }}/100) than {{ resume.target_role }} ({{ ats.ats_score }}/100) &mdash;
+                worth a look if you're also open to that track.
+            </p>
+            {% endif %}
+
+            <div class="mt-6">
+                <canvas id="roleFitChart" height="{{ role_fit|length * 34 }}"></canvas>
+            </div>
+
+            <ul class="mt-5 space-y-1.5">
+                {% for r in role_fit %}
+                <li class="flex items-center justify-between text-xs">
+                    <span class="flex items-center gap-1.5 {{ 'font-semibold text-indigo-600 dark:text-indigo-400' if r.is_target else 'text-slate-500 dark:text-slate-400' }}">
+                        {{ r.role }}
+                        {% if r.is_target %}<span class="rounded-full bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600 dark:text-indigo-400">your target</span>{% endif %}
+                        {% if r.is_best_fit and not r.is_target %}<span class="rounded-full bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400">best fit</span>{% endif %}
+                    </span>
+                    <span class="tabular-nums text-slate-400 dark:text-slate-500">{{ r.total_matched }}/{{ r.total_keywords }} keywords &middot; {{ r.ats_score }}/100</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <div id="impact-section" class="mt-10 border-t border-slate-100 dark:border-slate-800 pt-8">
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
@@ -301,6 +335,55 @@
             chart.options.scales.x.ticks.color = c.tick;
             chart.options.scales.x.grid.color = c.grid;
             chart.options.scales.y.ticks.color = c.tick;
+            chart.update();
+        });
+    })();
+
+    (function () {
+        const canvas = document.getElementById("roleFitChart");
+        if (!canvas || typeof Chart === "undefined") return;
+
+        function isDark() { return document.documentElement.classList.contains("dark"); }
+        function themeColors() {
+            return isDark()
+                ? { tick: "#94a3b8", grid: "rgba(148, 163, 184, 0.15)" }
+                : { tick: "#64748b", grid: "rgba(100, 116, 139, 0.12)" };
+        }
+
+        const roles = {{ role_fit|map(attribute="role")|list|tojson }};
+        const scores = {{ role_fit|map(attribute="ats_score")|list|tojson }};
+        const isTarget = {{ role_fit|map(attribute="is_target")|list|tojson }};
+        const isBestFit = {{ role_fit|map(attribute="is_best_fit")|list|tojson }};
+        const colors = roles.map((_, i) => (isTarget[i] ? "#4f46e5" : isBestFit[i] ? "#f59e0b" : isDark() ? "#475569" : "#cbd5e1"));
+
+        const chart = new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels: roles,
+                datasets: [{
+                    label: "ATS fit out of 100",
+                    data: scores,
+                    backgroundColor: colors,
+                    borderRadius: 6,
+                }],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                scales: {
+                    x: { min: 0, max: 100, ticks: { color: themeColors().tick }, grid: { color: themeColors().grid } },
+                    y: { ticks: { color: themeColors().tick }, grid: { display: false } },
+                },
+                plugins: { legend: { display: false } },
+            },
+        });
+
+        document.addEventListener("resumeiq-theme-change", function () {
+            const c = themeColors();
+            chart.options.scales.x.ticks.color = c.tick;
+            chart.options.scales.x.grid.color = c.grid;
+            chart.options.scales.y.ticks.color = c.tick;
+            chart.data.datasets[0].backgroundColor = roles.map((_, i) => (isTarget[i] ? "#4f46e5" : isBestFit[i] ? "#f59e0b" : isDark() ? "#475569" : "#cbd5e1"));
             chart.update();
         });
     })();

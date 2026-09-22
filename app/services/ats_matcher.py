@@ -87,3 +87,35 @@ def check_ats_keywords(raw_text, role):
 
 def available_roles():
     return list(_load_keyword_bank().keys())
+
+
+def role_fit_across_roles(raw_text, target_role, roles=None):
+    """Score the same resume against every role's keyword bank, not just the
+    one the user picked. Reuses check_ats_keywords() per role -- regex +
+    fuzzy/synonym matching only, no spaCy -- so running it 8x on every page
+    view is cheap enough to compute fresh rather than persist.
+
+    Returns roles sorted by fit (best first), each tagged as the chosen
+    target role and/or the single best-fitting role.
+    """
+    roles = roles or available_roles()
+    results = []
+    for role in roles:
+        result = check_ats_keywords(raw_text, role)
+        results.append(
+            {
+                "role": role,
+                "ats_score": result["ats_score"],
+                "total_matched": result["total_matched"],
+                "total_keywords": result["total_keywords"],
+                "is_target": role == target_role,
+            }
+        )
+
+    results.sort(key=lambda r: r["ats_score"], reverse=True)
+    if results:
+        results[0]["is_best_fit"] = True
+        for r in results[1:]:
+            r["is_best_fit"] = False
+
+    return results
