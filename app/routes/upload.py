@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from app.extensions import db
 from app.models import Analysis, Resume
 from app.services.ats_matcher import check_ats_keywords, highlighted_preview, role_fit_across_roles
-from app.services.benchmarks import score_context_note
+from app.services.benchmarks import score_benchmarks, score_context_note
 from app.services.feedback import generate_feedback, top_priority_suggestions
 from app.services.impact_score import analyze_impact
 from app.services.parser import ParsingError, extract_text
@@ -107,6 +107,7 @@ def preview(resume_id):
     top_fixes = top_priority_suggestions(feedback)
     role_fit = role_fit_across_roles(resume.raw_text, resume.target_role)
     preview_html = highlighted_preview(resume.raw_text, ats)
+    benchmarks = score_benchmarks(score["total"], ats["ats_score"], impact.get("impact_score"))
 
     return render_template(
         "resume_preview.html",
@@ -119,4 +120,5 @@ def preview(resume_id):
         top_fixes=top_fixes,
         role_fit=role_fit,
         preview_html=preview_html,
+        benchmarks=benchmarks,
     )
