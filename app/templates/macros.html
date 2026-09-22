@@ -64,3 +64,26 @@
     </div>
 </div>
 {% endmacro %}
+
+{# One consistent-stroke geometric icon per target role -- authored SVG, not
+   emoji/unicode glyphs, matching the site's existing icon style (viewBox 24,
+   stroke-width 1.6, currentColor, no fill). Used by the role picker. #}
+{% macro role_icon(role) %}
+{% if role == "Data Analyst" %}
+<path d="M4.5 19.5v-6M10.5 19.5V9M16.5 19.5V5.5M3 19.5h18"/>
+{% elif role == "Web Developer" %}
+<path d="M9 8 4.5 12.5 9 17M15 8l4.5 4.5L15 17"/>
+{% elif role == "AI Engineer" %}
+<path d="M7 7h10v10H7z"/><path d="M12 3.5V7M12 17v3.5M3.5 12H7M17 12h3.5M5.8 5.8 8 8M16 16l2.2 2.2M18.2 5.8 16 8M8 16l-2.2 2.2"/>
+{% elif role == "Cloud Engineer" %}
+<path d="M7 18h10a4 4 0 0 0 .5-7.97 5.5 5.5 0 0 0-10.6-1.9A4.5 4.5 0 0 0 7 18Z"/>
+{% elif role == "Mobile App Developer" %}
+<path d="M7 3h10v18H7z"/><path d="M11 18h2"/>
+{% elif role == "UI/UX Designer" %}
+<path d="M4 20l1.2-4.8L16.8 3.6a1.7 1.7 0 0 1 2.4 0l1.2 1.2a1.7 1.7 0 0 1 0 2.4L8.8 18.8 4 20Z"/><path d="M14.5 6.5l3 3"/>
+{% elif role == "Backend Developer" %}
+<path d="M4 4.5h16v5.5H4zM4 14h16v5.5H4z"/><path d="M7.5 7.25h.01M7.5 16.75h.01"/>
+{% elif role == "DevOps Engineer" %}
+<path d="M7 15.5a3.5 3.5 0 1 1 0-7c2.5 0 3.8 2 5 3.5s2.5 3.5 5 3.5a3.5 3.5 0 1 0 0-7c-2.5 0-3.8 2-5 3.5s-2.5 3.5-5 3.5Z"/>
+{% endif %}
+{% endmacro %}

@@ -11,3 +11,16 @@ TARGET_ROLES = [
     "Backend Developer",
     "DevOps Engineer",
 ]
+
+# One short, illustrative line per role for the target-role picker -- purely
+# descriptive copy, not a claim about the keyword bank's exact contents.
+ROLE_BLURBS = {
+    "Data Analyst": "SQL, dashboards, statistics",
+    "Web Developer": "HTML, CSS, JavaScript",
+    "AI Engineer": "ML models, Python, pipelines",
+    "Cloud Engineer": "AWS, infrastructure, deployment",
+    "Mobile App Developer": "iOS, Android, cross-platform",
+    "UI/UX Designer": "Figma, prototypes, research",
+    "Backend Developer": "APIs, databases, server logic",
+    "DevOps Engineer": "CI/CD, containers, automation",
+}

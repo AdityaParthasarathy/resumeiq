@@ -168,9 +168,49 @@
         <form id="upload-form" action="{{ url_for('upload.upload') }}" method="post" enctype="multipart/form-data"
               class="reveal mt-10 max-w-md mx-auto bg-[var(--surface)] border border-[var(--paper-line)] rounded-2xl shadow-sm p-8 text-left">
 
-            <label for="target_role" class="block text-sm font-medium text-[var(--ink-soft)]">Target role</label>
-            <select id="target_role" name="target_role" required
-                    class="mt-1 w-full rounded-lg border border-[var(--paper-line)] bg-[var(--surface)] text-[var(--ink)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <span id="role-label" class="block text-sm font-medium text-[var(--ink-soft)]">Target role</span>
+
+            <div class="role-field relative mt-1.5">
+                <button type="button" id="role-trigger"
+                        class="role-trigger flex w-full items-center gap-3 rounded-lg border border-[var(--paper-line)] bg-[var(--surface)] px-3 py-2.5 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        aria-haspopup="listbox" aria-expanded="false" aria-labelledby="role-label" aria-controls="role-listbox">
+                    <span class="role-trigger__icon flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--paper)] text-[var(--muted)] transition-colors">
+                        <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 7h16M4 12h16M4 17h10" />
+                        </svg>
+                    </span>
+                    <span class="min-w-0 flex-1">
+                        <span class="role-trigger__name block truncate text-sm font-medium text-[var(--ink)]">Select a role&hellip;</span>
+                        <span class="role-trigger__blurb block truncate text-xs text-[var(--muted)]">Pick the role you're targeting</span>
+                    </span>
+                    <svg class="role-trigger__chevron h-4 w-4 shrink-0 text-[var(--muted)]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 7.5l5 5 5-5" />
+                    </svg>
+                </button>
+
+                <div id="role-listbox" role="listbox" aria-labelledby="role-label" tabindex="-1"
+                     class="role-listbox absolute inset-x-0 top-full z-20 mt-2 rounded-xl border border-[var(--paper-line)] bg-[var(--surface)] p-1.5 shadow-lg" hidden>
+                    {% for role in target_roles %}
+                    <div role="option" id="role-option-{{ loop.index0 }}" data-value="{{ role }}" data-index="{{ loop.index0 }}" aria-selected="false"
+                         class="role-option flex items-center gap-3 rounded-lg px-2.5 py-2 transition-colors">
+                        <span class="role-option__icon flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)] transition-colors">
+                            <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                {{ macros.role_icon(role) }}
+                            </svg>
+                        </span>
+                        <span class="min-w-0 flex-1">
+                            <span class="role-option__label block truncate text-sm font-medium text-[var(--ink)]">{{ role }}</span>
+                            <span class="role-option__blurb block truncate text-xs text-[var(--muted)]">{{ role_blurbs[role] }}</span>
+                        </span>
+                        <svg class="role-option__check h-4 w-4 shrink-0 text-[var(--brand)]" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-8 8a1 1 0 01-1.42 0l-4-4a1 1 0 111.42-1.42L8 12.58l7.29-7.29a1 1 0 011.42 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <select id="target_role" name="target_role" required aria-label="Target role" class="role-native-select">
                 <option value="" disabled selected>Select a role&hellip;</option>
                 {% for role in target_roles %}
                 <option value="{{ role }}">{{ role }}</option>
@@ -255,5 +295,6 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+<script src="{{ url_for('static', filename='js/role-picker.js') }}"></script>
 <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 {% endblock %}
