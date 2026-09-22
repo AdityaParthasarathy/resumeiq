@@ -1,28 +1,9 @@
 import os
-import subprocess
 
 from flask import Flask, flash, redirect, render_template, url_for
 
 from app.config import config_by_name
 from app.extensions import db
-
-
-def _git_sha():
-    # Best-effort footer build tag -- absent in environments without git
-    # history (e.g. a stripped deploy artifact), so callers must handle None.
-    try:
-        repo_root = os.path.dirname(os.path.dirname(__file__))
-        return (
-            subprocess.check_output(
-                ["git", "rev-parse", "--short", "HEAD"],
-                cwd=repo_root,
-                stderr=subprocess.DEVNULL,
-            )
-            .decode()
-            .strip()
-        )
-    except Exception:
-        return None
 
 
 def create_app(env=None):
@@ -35,12 +16,6 @@ def create_app(env=None):
     os.makedirs(app.config["INSTANCE_FOLDER"], exist_ok=True)
 
     db.init_app(app)
-
-    git_sha = _git_sha()
-
-    @app.context_processor
-    def inject_git_sha():
-        return {"git_sha": git_sha}
 
     from app.routes import register_blueprints
 

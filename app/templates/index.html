@@ -199,6 +199,56 @@
     </div>
 </section>
 
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="border-t border-[var(--paper-line)] bg-[color-mix(in_srgb,var(--surface)_72%,transparent)]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-24">
+        <div class="max-w-2xl reveal">
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brand)]">Questions</p>
+            <h2 class="font-display mt-4 text-3xl sm:text-4xl tracking-tight text-[var(--ink)]">Frequently asked questions.</h2>
+            <p class="mt-4 text-[var(--ink-soft)] leading-relaxed">Everything people usually ask before (and right after) their first upload.</p>
+        </div>
+
+        <div class="mt-12 space-y-3">
+            {% set faqs = [
+                ("Does ResumeIQ use an LLM or send my resume to an AI model?",
+                 "No. Every score comes from rule-based logic you can trace back yourself — keyword matching, section detection, and NLP parsing that all run on the server, not through GPT, Claude, or any other model. That's also why it's instant: there's no API call to wait on."),
+                ("What file types and size does it accept?",
+                 "PDF and DOCX, up to 5 MB. If a file fails to parse — a scanned image PDF with no selectable text, for example — you'll get a clear error instead of a silent bad score."),
+                ("Is my resume stored or shared with anyone?",
+                 "It's stored only so this specific report keeps working if you revisit the link. There's no account, no email collection, and nothing is shared with a third party. On the hosted demo there's also no persistent disk, so uploads and results are cleared whenever the server restarts or redeploys."),
+                ("What's the difference between the Resume Score, ATS Score, and Impact Score?",
+                 "Resume Score checks structure and completeness — sections, contact info, education, projects. ATS Score checks whether your target role's must-have and nice-to-have keywords actually appear in the text. Impact Score looks at your bullet points specifically: strong verbs, active voice, and quantified results. They're independent on purpose, so a low score in one points you at a specific fix instead of a vague overall verdict."),
+                ("Why is my ATS Score low even though I have those skills?",
+                 "The keyword checker can only credit what's written down — it matches exact terms, common synonyms/abbreviations (e.g. \"ML\" for \"Machine Learning\"), and close misspellings, but it can't infer a skill from context the way a person reading your resume might. If you've used a tool, name it explicitly; the extracted-text preview on your report highlights exactly what was and wasn't found."),
+                ("Which roles can I target?",
+                 "Data Analyst, Web Developer, AI Engineer, Cloud Engineer, Mobile App Developer, UI/UX Designer, Backend Developer, and DevOps Engineer — each with its own must-have/nice-to-have keyword bank. Your report also shows how the same resume scores against every other role, in case a different track fits better than the one you picked."),
+                ("Can I re-check my resume after making changes?",
+                 "Yes — fix what the report flags and upload again from the button at the bottom of your results. Each upload is a fresh, independent analysis, so nothing about your previous score carries over or biases the new one."),
+                ("Is this free to use?",
+                 "Yes, fully free — no account, no payment, no limit on uploads."),
+            ] %}
+            {% for question, answer in faqs %}
+            <div class="faq-item reveal rounded-2xl border border-[var(--paper-line)] bg-[var(--surface)]" data-open="{{ 'true' if loop.first else 'false' }}">
+                <h3>
+                    <button type="button" class="faq-trigger" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="faq-answer-{{ loop.index }}" id="faq-trigger-{{ loop.index }}">
+                        <span>{{ question }}</span>
+                        <svg class="faq-chevron h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 7.5l5 5 5-5" />
+                        </svg>
+                    </button>
+                </h3>
+                <div id="faq-answer-{{ loop.index }}" role="region" aria-labelledby="faq-trigger-{{ loop.index }}" class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <p>{{ answer }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 {% endblock %}
 
 {% block scripts %}

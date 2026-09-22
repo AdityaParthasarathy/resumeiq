@@ -58,4 +58,15 @@
             target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
         });
     });
+
+    // FAQ accordion -- each item toggles independently (not single-open), state
+    // lives in aria-expanded (source of truth) mirrored onto data-open for CSS.
+    document.querySelectorAll(".faq-trigger").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+            const item = trigger.closest(".faq-item");
+            const isOpen = trigger.getAttribute("aria-expanded") === "true";
+            trigger.setAttribute("aria-expanded", String(!isOpen));
+            item.dataset.open = String(!isOpen);
+        });
+    });
 })();
